@@ -43,7 +43,6 @@ results.scores(scores, pars.limit, reverse);
       <jsp:include page="local/tabs.jsp"/>
     </header>
     <form  class="search">
-      <input type="hidden" name="f" value="<%=JspTools.escape(pars.fieldName)%>"/>
       <input type="hidden" name="order" value="<%=pars.order%>"/>
       <label for="limit" title="Nombre de mots à l’écran">Mots</label>
       <input name="limit" type="text" value="<%= pars.limit %>" class="num3" size="2"/>

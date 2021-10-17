@@ -3,7 +3,6 @@
 <%@ page import="org.apache.lucene.util.automaton.Automaton" %>
 <%@ page import="org.apache.lucene.util.automaton.ByteRunAutomaton" %>
 <%@ page import="alix.lucene.util.WordsAutomatonBuilder" %>
-<%@ include file="jsp/prelude.jsp" %>
 <%!
 public void kwic(final PageContext page, final Alix alix, final TopDocs topDocs, Pars pars) throws IOException, NoSuchFieldException
 {
@@ -69,7 +68,7 @@ public void kwic(final PageContext page, final Alix alix, final TopDocs topDocs,
     }
     
     String[] lines = null;
-    lines = doc.kwic(pars.fieldName, include, href.toString(), 200, pars.left, pars.right, gap, expression, repetitions);
+    lines = doc.kwic(pars.field.name(), include, href.toString(), 200, pars.left, pars.right, gap, expression, repetitions);
     if (lines == null || lines.length < 1) continue;
     // doc.kwic(field, include, 50, 50, 100);
     out.println("<article class=\"kwic\">");
@@ -97,8 +96,8 @@ public void kwic(final PageContext page, final Alix alix, final TopDocs topDocs,
 
 
 %>
+<%@ include file="jsp/prelude.jsp" %>
 <%
-Pars pars = pars(pageContext);
 pars.forms = alix.forms(pars.q);
 // local param
 pars.left = 50;
@@ -111,7 +110,7 @@ Query query = null;
 Query qWords = null;
 Query qFilter = null;
 if (pars.q != null) {
-  qWords = alix.query(pars.fieldName, pars.q);
+  qWords = alix.query(pars.field.name(), pars.q);
 }
 if (pars.book != null) {
   qFilter = new TermQuery(new Term(Alix.BOOKID, pars.book));
@@ -152,21 +151,26 @@ out.println("<!-- get topDocs "+(System.nanoTime() - nanos) / 1000000.0 + "ms\" 
    <jsp:include page="local/head.jsp" flush="true" />
    <title>Concordance, <%= alix.props.get("label")%> [Alix]</title>
    <style>
-span.left {display: inline-block; text-align: right; width: <%= Math.round(pars.left * 1.0)%>ex; padding-right: 1ex;}
+span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pars.left * 1.0)%>ex; padding-right: 1ex;}
     </style>
   </head>
   <body>
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
       <form  class="search">
-        <input type="hidden" name="f" value="<%= JspTools.escape(pars.fieldName) %>"/>
         <label for="q">Chercher</label>
         <button style="position: absolute; left: -9999px" type="submit">▶</button>
-        <input name="q" id="q" value="<%=JspTools.escape(pars.q)%>" autocomplete="off" size="60" autofocus="autofocus" 
+        <input name="q" class="q" id="q" value="<%=JspTools.escape(pars.q)%>" autocomplete="off" size="60" autofocus="autofocus" 
           onfocus="this.setSelectionRange(this.value.length,this.value.length);"
           oninput="this.form['start'].value='';"
         />
+        <select name="f" onchange="this.form.submit()">
+          <option/>
+          <%=pars.field.options()%>
+        </select>
+        <!-- 
         <label>Expressions <input type="checkbox" name="expression" value="true" <%= (pars.expression)?"checked=\"checked\"":"" %>/></label>
+         -->
         <br/><label for="book" title="Limiter la sélection à un seul livre">Livre</label>
         <%= selectBook(alix, pars.book) %>
         <select name="sort" onchange="this.form['start'].value=''; this.form.submit()" title="Ordre">

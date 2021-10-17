@@ -118,7 +118,7 @@ static class Node implements Comparable<Node>
 %>
 <%
 // global data handlers
-Pars pars = pars(pageContext);
+String field = "text";
 /*
 int starsCount = tools.getInt("stars", starsDefault);
 if (starsCount < 1) starsCount = starsDefault;
@@ -135,8 +135,8 @@ if (planets < 1) planets = planetMid;
 // local data object, to build from parameters
 BitSet filter = null;
 if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
-final FieldText ftext = alix.fieldText(pars.fieldName);
-final FieldRail frail = alix.fieldRail(pars.fieldName);
+final FieldText ftext = alix.fieldText(field);
+final FieldRail frail = alix.fieldRail(field);
 final int context = (pars.context + 1) / 2;
 FormEnum results = new FormEnum(ftext); // build a wrapper to have results
 results.left = context; // left context

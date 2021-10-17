@@ -3,9 +3,9 @@
 <%@ page import="alix.util.Top" %>
 <%@include file="jsp/prelude.jsp" %>
 <%
-Pars pars = pars(pageContext);
 // params for the page
 pars.limit = tools.getInt("limit", 50);
+String field = "text";
 
 int docId = tools.getInt("docid", -1); // get doc by lucene internal docId or persistant String id
 String id = tools.getString("id", "");
@@ -43,7 +43,7 @@ SortField sf2 = new SortField(Alix.ID, SortField.Type.STRING);
     <script>
 <%
 if (doc != null) { // document id is verified, give it to javascript
-  out.println("var docLength = "+doc.length(TEXT)+";");
+  out.println("var docLength = " + doc.length(field) + ";");
   out.println("var docId = \""+doc.id()+"\";");
 }
 %>
@@ -113,7 +113,7 @@ if (doc != null) { // document id is verified, give it to javascript
         if (doc != null) {
           out.println(" <h5>Mots clés</h5>");
           BooleanQuery.Builder qBuilder = new BooleanQuery.Builder();
-          FormEnum forms = doc.results(TEXT, pars.limit, pars.cat.tags(), pars.distrib.scorer(), false);
+          FormEnum forms = doc.results(field, pars.limit, pars.cat.tags(), pars.distrib.scorer(), false);
           int no = 1;
           forms.reset();
           while (forms.hasNext()) {
@@ -126,7 +126,7 @@ if (doc != null) { // document id is verified, give it to javascript
             out.print(" <small>(" + forms.freq() + ")</small>");
             out.println("</a>");
             if (no < 30) {
-              Query tq = new TermQuery(new Term(TEXT, forms.form()));
+              Query tq = new TermQuery(new Term(field, forms.form()));
               qBuilder.add(tq, BooleanClause.Occur.SHOULD);
             }
             no++;
@@ -147,10 +147,10 @@ if (doc != null) { // document id is verified, give it to javascript
       // hilite
       if (!"".equals(q)) {
         String[] terms = alix.forms(q);
-        out.print(doc.hilite(TEXT, terms));
+        out.print(doc.hilite(field, terms));
       }
       else {
-        out.print(doc.doc().get(TEXT));
+        out.print(doc.doc().get(field));
       }
         }
     %>

@@ -1,8 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@ include file="jsp/prelude.jsp" %>
 <%
-// get default parameters from request
-Pars pars = pars(pageContext);
 FormEnum results = freqList(alix, pars);
 %>
 <!DOCTYPE html>
@@ -76,18 +74,18 @@ FormEnum results = freqList(alix, pars);
 
         
         if (results.limit() < 1) {
-          if (pars.q != null && title != null) out.println("<b>"+pars.q+"</b> — introuvable dans "+title);
+          if (pars.q != null && title != null) out.println("<b>"+pars.q+"</b> — introuvable dans <em>"+title+"</em>");
           else if (pars.q != null) out.println("<b>"+pars.q+"</b> — introuvable dans le copus");
           else out.println("Cas non prévu par le développeur. Bug ?");
         }
         else {
           int rank = 1;
-          out.println("au rang "+(rank + 1)+" la graphie <strong>"+results.formByRank(rank)+"</strong> apparaît ");
-          if (pars.book != null && !pars.book.trim().equals("")) out.println("<br/>— dans " +title);
+          out.println("au rang "+(rank + 1)+" la graphie <strong>"+results.formByRank(rank)+"</strong> ");
+          if (pars.book != null && !pars.book.trim().equals("")) out.println("<br/>— dans <em>" +title+"</em>");
           if (pars.q != null) out.println("<br/>— au voisinage de <em>" + pars.q + "</em> ("+pars.left+ " mots à gauche, " + pars.right + " mots à droite)");
-          out.println("<br/>— à " + frdec.format(results.freqByRank(rank)) + " occurrences");
+          out.println("<br/>— " + frdec.format(results.freqByRank(rank)) + " occurrences");
           if (pars.q != null || pars.book != null) out.println(" (sur " + frdec.format(results.occsByRank(rank)) + " dans la totalité du corpus)");
-          out.println("<br/>— dans " + frdec.format(results.hitsByRank(rank)) +" textes");
+          out.println("<br/>— " + frdec.format(results.hitsByRank(rank)) +" textes trouvés");
           if (pars.q != null || pars.book != null) out.println(" (sur les " + frdec.format(results.docsByRank(rank)) +" du corpus qui contiennent ce mot)");
         }
         %>

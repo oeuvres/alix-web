@@ -58,8 +58,8 @@ final static DecimalFormatSymbols ensyms = DecimalFormatSymbols.getInstance(Loca
 static final DecimalFormat frdec = new DecimalFormat("###,###,###,###", frsyms);
 
 static final DecimalFormat dfdec3 = new DecimalFormat("0.000", ensyms);
-static final DecimalFormat dfdec2 = new DecimalFormat("###,###,###,###.00", ensyms);
-static final DecimalFormat frdec2 = new DecimalFormat("###,###,###,###.00", frsyms);
+static final DecimalFormat dfdec2 = new DecimalFormat("###,###,###,##0.00", ensyms);
+static final DecimalFormat frdec2 = new DecimalFormat("###,###,###,##0.00", frsyms);
 static final DecimalFormat dfdec1 = new DecimalFormat("0.0", ensyms);
 static final DecimalFormat dfdec5 = new DecimalFormat("0.0000E0", ensyms);
 static final DecimalFormat frdec5 = new DecimalFormat("0.0000E0", frsyms);
@@ -341,5 +341,7 @@ if (Alix.pool.size() > 0) {
 JspTools tools = new JspTools(pageContext);
 Alix alix = (Alix)tools.getMap("base", Alix.pool, baseDefault, "alixBase");
 IndexReader reader = alix.reader();
+//get default parameters from request
+Pars pars = pars(pageContext);
 
 %>

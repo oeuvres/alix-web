@@ -34,6 +34,15 @@
  * Colors and fonts
  */
 
+body::after,
+main::after,
+div.row::after,
+nav.tabs::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 .mark,
 article.snip mark,
 table.sortable th,
@@ -84,12 +93,6 @@ nav.tabs {
 nav.tabs {
   border-bottom: 1px solid var(--bg2);
 }
-nav.tabs::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
 
 nav.tabs a {
   padding: 5px 0.5rem;
@@ -153,6 +156,10 @@ a:hover {
 
 a:focus, a:active {
   outline: unset;
+}
+
+em {
+  font-weight: 500;
 }
 
 strong,

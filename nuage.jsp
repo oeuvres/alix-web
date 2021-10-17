@@ -2,8 +2,6 @@
 <%@ include file="jsp/prelude.jsp" %>
 <%
 boolean first;
-// get default parameters from request
-Pars pars = pars(pageContext);
 Corpus corpus = null;
 BitSet filter = null; // if a corpus is selected, filter results with a bitset
 if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});

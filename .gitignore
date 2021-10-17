@@ -1,5 +1,6 @@
 .*.swp
 /WEB-INF/*.xml
 !/WEB-INF/web.xml
+!/WEB-INF/_corpus.xml
 /WEB-INF/bases
 WEB-INF/ddr-glob.csv
