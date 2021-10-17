@@ -5,7 +5,6 @@
 <%
 Pars pars = pars(pageContext);
 // params for the page
-pars.fieldName = TEXT;
 pars.limit = tools.getInt("limit", 50);
 
 int docId = tools.getInt("docid", -1); // get doc by lucene internal docId or persistant String id

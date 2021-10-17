@@ -14,7 +14,7 @@ Pars pars = pars(pageContext);
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
       <form  class="search">
-        <input type="hidden" name="f" value="<%=JspTools.escape(pars.fieldName)%>"/>
+        <input type="hidden" name="f" value="<%=JspTools.escape(pars.field.name())%>"/>
        <label for="q" title="Classer les livres selon un ou plusieurs mots">Chercher</label>
         <input name="q" onclick="this.select()" type="text" value="<%=tools.escape(pars.q)%>" size="40" />
         

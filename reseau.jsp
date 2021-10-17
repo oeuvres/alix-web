@@ -237,6 +237,23 @@ boolean first;
     }
     
   }
+  
+  /*
+           <label for="distrib" title="Algorithme d’ordre des mots pivots">Score</label>
+           <select name="distrib" onchange="this.form.submit()">
+            <option/>
+            pars.distrib.options("occs g bm25 tfidf")
+           </select>
+            
+            <label for="mi" title="Algorithme de score pour les liens">Dépendance</label>
+            <select name="mi" onchange="this.form.submit()">
+              <option/>
+              pars.mi.options()
+            </select>
+
+  
+  */
+  
   %>
 <!-- Nodes <%= ((System.nanoTime() - time) / 1000000.0) %> ms  -->
        <form id="form" class="search">
@@ -247,24 +264,14 @@ boolean first;
              <option/>
              <%=pars.cat.options()%>
            </select>
-           <label for="distrib" title="Algorithme d’ordre des mots pivots">Score</label>
-           <select name="distrib" onchange="this.form.submit()">
-            <option/>
-             <%= pars.distrib.options("occs g bm25 tfidf") %>
-           </select>
            <label for="context" title="Largeur du contexte, en nombre de mots, dont sont extraits les liens">Contexte</label>
            <input name="context" type="text" value="<%= pars.context %>"  class="num3" size="2"/>
            <label for="planets" title="Nombre maximum de liens sortants par nœud">Compacité</label>
            <input type="text" name="planets" value="<%=planets%>"  class="num3" size="2"/>
-           <label for="mi" title="Algorithme de score pour les liens">Dépendance</label>
-           <select name="mi" onchange="this.form.submit()">
-             <option/>
-             <%= pars.mi.options() %>
-           </select>
-           <button type="submit">▶</button>
+           <button type="submit">▼</button>
            <br/>
            <label for="words">Chercher</label>
-           <input type="text" name="q" value="<% JspTools.escape(out, pars.q); %>" size="40" />
+           <input type="text" class="q" name="q" value="<% JspTools.escape(out, pars.q); %>" size="40" />
            <label for="book">Livre</label>
            <%= selectBook(alix, pars.book) %>
           <a class="help button" href="#aide">?</a>

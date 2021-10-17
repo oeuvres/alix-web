@@ -5,22 +5,14 @@
 <%@ page import="java.util.Map" %>
 <%!
 static public enum Tab {
-  index("<strong>Alix, démo</strong>", "index.jsp", "Présentation", new String[]{"q", "book", "cat", "context"}) {
-  },
-  wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"q", "book", "cat", "right", "left"}) {
-  },
-  freqs("Table", "table.jsp", "Fréquences par mots", new String[]{"q", "book", "cat", "context"}) {
-  },
-  cloud("Nuage", "nuage.jsp", "Nuage de mots", new String[]{"q", "book", "cat", "context"}) {
-  },
-  books("Livres", "livres.jsp", "Fréquences par livres", new String[]{"q"}) {
-  },
-  chapters("Chapitres", "chapitres.jsp", "Fréquences par livres", new String[]{"q"}) {
-  },
-  kwic("Concordance", "conc.jsp", "Recherche de mot", new String[]{"q", "book"}) {
-  },
-  doc("Liseuse", "doc.jsp", "Lire un texte", new String[]{"id", "q"}) {
-  },
+  index("<strong>Alix, démo</strong>", "index.jsp", "Présentation", new String[]{"q", "book", "cat", "context"}) { },
+  freqs("Table", "table.jsp", "Fréquences par mots", new String[]{"q", "book", "cat", "context"}) { },
+  cloud("Nuage", "nuage.jsp", "Nuage de mots", new String[]{"q", "book", "cat", "context"}) { },
+  books("Livres", "livres.jsp", "Fréquences par livres/compilations", new String[]{"q"}) { },
+  chapters("Chapitres", "chapitres.jsp", "Fréquences par texte (chapitres, articles)", new String[]{"q"}) { },
+  kwic("Concordance", "conc.jsp", "Recherche de mot", new String[]{"q", "book"}) { },
+  doc("Liseuse", "doc.jsp", "Lire un texte", new String[]{"id", "q"}) { },
+  wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"q", "book", "cat", "right", "left"}) { },
   ;
 
   final public String label;
@@ -81,7 +73,7 @@ static public enum Tab {
 %>
 <nav class="tabs">
   <%= Tab.nav(request) %>
-  <form class="base">Base
+  <form class="base">Corpus
     <select  name="base" oninput="this.form.submit();">
     <%
     JspTools retools = new JspTools(pageContext);

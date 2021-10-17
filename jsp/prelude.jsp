@@ -58,8 +58,8 @@ final static DecimalFormatSymbols ensyms = DecimalFormatSymbols.getInstance(Loca
 static final DecimalFormat frdec = new DecimalFormat("###,###,###,###", frsyms);
 
 static final DecimalFormat dfdec3 = new DecimalFormat("0.000", ensyms);
-static final DecimalFormat dfdec2 = new DecimalFormat("0.00", ensyms);
-static final DecimalFormat frdec2 = new DecimalFormat("0.00", frsyms);
+static final DecimalFormat dfdec2 = new DecimalFormat("###,###,###,###.00", ensyms);
+static final DecimalFormat frdec2 = new DecimalFormat("###,###,###,###.00", frsyms);
 static final DecimalFormat dfdec1 = new DecimalFormat("0.0", ensyms);
 static final DecimalFormat dfdec5 = new DecimalFormat("0.0000E0", ensyms);
 static final DecimalFormat frdec5 = new DecimalFormat("0.0000E0", frsyms);
@@ -76,8 +76,6 @@ final static Sort sortYear = new Sort(
 );
 
 
-/** Field name containing canonized text */
-final static String TEXT = "text";
 /** Field Name with int date */
 final static String YEAR = "year";
 /** Key prefix for current corpus in session */
@@ -94,7 +92,7 @@ static String formatScore(double real)
   if (offset > 4) return ""+(int)real;
   
   // return String.format("%,." + (digits - offset) + "f", real)+" "+offset;
-  return dfdec2.format(real);
+  return frdec2.format(real);
 }
 
 static public enum Order implements Option {
@@ -108,6 +106,21 @@ static public enum Order implements Option {
   final public String label;
   public String label() { return label; }
   public String hint() { return null; }
+}
+
+public enum Field implements Option 
+{
+  text("Lemmes", "Comme dans un dictionnaire : verbes conjugués ⇒ infinitif, noms ou adjectifs accordés ⇒ masculin singulier"),
+  text_orth("Orthographies", "Graphies normalisées : majuscule début de phrase, parce que…")
+  ;
+  private Field(final String label, final String hint) {  
+    this.label = label;
+    this.hint = hint;
+  }
+  final public String label;
+  final public String hint;
+  public String label() { return label; }
+  public String hint() { return hint; }
 }
 
 
@@ -130,7 +143,7 @@ public static Query corpusQuery(Corpus corpus, Query query) throws IOException
  * All pars for all page 
  */
 public class Pars {
-  String fieldName; // field to search
+  Field field; // field to search
   String book; // restrict to a book
   String q; // word query
   Cat cat; // word categories to filter
@@ -162,7 +175,7 @@ public Pars pars(final PageContext page)
   Pars pars = new Pars();
   JspTools tools = new JspTools(page);
   
-  pars.fieldName = tools.getString("f", TEXT);
+  pars.field = (Field)tools.getEnum("f", Field.text, "alixField");
   pars.q = tools.getString("q", null);
   pars.book = tools.getString("book", null); // limit to a book
   // Words
@@ -199,13 +212,13 @@ public Pars pars(final PageContext page)
   else if (pars.limit < 1 || pars.limit > limitMax) pars.limit = limitMax;
   
   // coocs
-  pars.left = tools.getInt("left", -1);
-  pars.right = tools.getInt("right", -1);
-  /*
+  pars.left = tools.getInt("left", 0);
+  pars.right = tools.getInt("right", 0);
   if (pars.left < 0) pars.left = 0;
+  if (pars.right < 0) pars.right = 0;
+  /*
   else if (pars.left > 10) pars.left = 50;
   pars.right = tools.getInt("right", 5);
-  if (pars.right < 0) pars.right = 0;
   else if (pars.right > 10) pars.right = 50;
   */
   pars.context = tools.getInt("context", -1);
@@ -277,14 +290,14 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
   BitSet filter = null; // if a corpus is selected, filter results with a bitset
   if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
 
-  FieldText fieldText = alix.fieldText(pars.fieldName);
+  FieldText fieldText = alix.fieldText(pars.field.name());
 
   boolean reverse = false;
   if (pars.order == Order.last) reverse = true;
 
   FormEnum results = null;
   if (pars.q != null) {
-    FieldRail rail = alix.fieldRail(pars.fieldName); // get the tool for cooccurrences
+    FieldRail rail = alix.fieldRail(pars.field.name()); // get the tool for cooccurrences
     // prepare a result object to populate with co-occurences
     results = new FormEnum(fieldText); 
     results.search = alix.forms(pars.q); // parse query as terms

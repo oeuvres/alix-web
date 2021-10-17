@@ -35,12 +35,12 @@ results.scores(scores, pars.limit, reverse);
 <!DOCTYPE html>
 <html>
   <head>
-    <jsp:include page="ddr_head.jsp" flush="true"/>
+    <jsp:include page="local/head.jsp" flush="true"/>
     <title><%=alix.props.get("label")%> [Alix]</title>
   </head>
   <body>
     <header>
-      <jsp:include page="tabs.jsp"/>
+      <jsp:include page="local/tabs.jsp"/>
     </header>
     <form  class="search">
       <input type="hidden" name="f" value="<%=JspTools.escape(pars.fieldName)%>"/>

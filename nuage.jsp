@@ -8,14 +8,14 @@ Corpus corpus = null;
 BitSet filter = null; // if a corpus is selected, filter results with a bitset
 if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
 
-FieldText fieldText = alix.fieldText(pars.fieldName);
+FieldText fieldText = alix.fieldText(pars.field.name());
 
 boolean reverse = false;
 if (pars.order == Order.last) reverse = true;
 
 FormEnum results = null;
 if (pars.q != null) {
-  FieldRail rail = alix.fieldRail(pars.fieldName); // get the tool for cooccurrences
+  FieldRail rail = alix.fieldRail(pars.field.name()); // get the tool for cooccurrences
   // parameters and population of dic.freqs and dic.hits with the rail co-occurrents
   results = new FormEnum(fieldText); // build a wrapper to have results
   results.search = alix.forms(pars.q); // parse query as terms
@@ -56,19 +56,16 @@ else {
     <header>
       <jsp:include page="local/tabs.jsp"/>
       <form  class="search">
-        <input type="hidden" name="f" value="<%=JspTools.escape(pars.fieldName)%>"/>
         <input type="hidden" name="order" value="<%=pars.order%>"/>
-        <label for="limit">Mots</label>
         <input name="limit" type="text" value="<%= pars.limit %>" class="num3" size="2"/>
+        <select name="f" onchange="this.form.submit()">
+          <option/>
+          <%=pars.field.options()%>
+        </select>
         <label for="cat" title="Filtrer les mots par catégories grammaticales">Catégories</label>
         <select name="cat" onchange="this.form.submit()">
           <option/>
           <%=pars.cat.options()%>
-        </select>
-        <label for="distrib" title="Algorithme d’ordre des mots sélectionné">Score</label>
-        <select name="distrib" onchange="this.form.submit()">
-          <option/>
-          <%= pars.distrib.options() %>
         </select>
              <%
              /*
@@ -82,11 +79,6 @@ else {
         <br/>
         <label for="q" title="Cooccurrents fréquents autour d’un ou plusieurs mots">Chercher</label>
         <input name="q" onclick="this.select()" type="text" value="<%=tools.escape(pars.q)%>" size="40" />
-        <label for="mi" title="Algorithme de score pour les liens">Dépendance</label>
-        <select name="mi" onchange="this.form.submit()">
-          <option/>
-          <%= pars.mi.options() %>
-        </select>
          <label for="left" title="Nombre de mots à capturer à gauche">Gauche</label>
         <input name="left" value="<%=pars.left%>" size="1" class="num3"/>
         Contextes

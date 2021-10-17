@@ -51,7 +51,7 @@ TopDocs topDocs = getTopDocs(pageContext, alix, corpus, q, sort);
 <!DOCTYPE html>
 <html>
   <head>
-    <%@ include file="ddr-header.jsp" %>
+    <%@ include file="../local/head.jsp" %>
     <title>Recherche, <%=props.get("title")%></title>
   </head>
   <body class="results">

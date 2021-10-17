@@ -7,7 +7,7 @@
 
 %>
 <%
-FieldText fstats = alix.fieldText(pars.fieldName);
+FieldText fstats = alix.fieldText(pars.field.name());
 
 
 %>
@@ -127,7 +127,7 @@ g = new Dygraph(div, json.data, attrs);
 <%
 
 final int len = 2000;
-Query query = alix.query(pars.fieldName, pars.q);
+Query query = alix.query(pars.field.name(), pars.q);
 if (query == null) {
   query = QUERY_CHAPTER;
 }
