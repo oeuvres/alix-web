@@ -24,12 +24,12 @@ MI mi = (MI)tools.getEnum("mi", MI.g);
 <!DOCTYPE html>
 <html>
   <head>
-    <%@ include file="local/head.jsp" %>
+    <%@ include file="local/head.jsp"%>
     <title>Expressions</title>
   </head>
   <body>
      <header>
-      <%@ include file="local/tabs.jsp" %>
+      <%@ include file="local/tabs.jsp"%>
       <form class="search">
       <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
         <%= selectBook(alix, book) %>

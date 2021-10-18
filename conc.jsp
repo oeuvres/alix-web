@@ -158,6 +158,12 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
       <form  class="search">
+        <%= selectCorpus(alix.name) %>
+        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
+        <%= selectBook(alix, pars.book) %>
+        
+        <br/>
+        
         <label for="q">Chercher</label>
         <button style="position: absolute; left: -9999px" type="submit">▶</button>
         <input name="q" class="q" id="q" value="<%=JspTools.escape(pars.q)%>" autocomplete="off" size="60" autofocus="autofocus" 
@@ -171,12 +177,7 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
         <!-- 
         <label>Expressions <input type="checkbox" name="expression" value="true" <%= (pars.expression)?"checked=\"checked\"":"" %>/></label>
          -->
-        <br/><label for="book" title="Limiter la sélection à un seul livre">Livre</label>
-        <%= selectBook(alix, pars.book) %>
-        <select name="sort" onchange="this.form['start'].value=''; this.form.submit()" title="Ordre">
-          <option/>
-          <%= pars.sort.options() %>
-        </select>
+        <br/>
         <% // prev / next nav
         if (pars.start > 1 && pars.q != null) {
           int n = Math.max(1, pars.start - pars.hpp);
@@ -200,7 +201,10 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
         */
   
         %>
-        
+        <select name="sort" onchange="this.form['start'].value=''; this.form.submit()" title="Ordre">
+          <option/>
+          <%= pars.sort.options() %>
+        </select>
        </form> 
     </header>
     <main>

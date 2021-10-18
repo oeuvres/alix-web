@@ -131,16 +131,15 @@ final int planetMid = 5;
 int planets = tools.getInt("planets", planetMid, alix.name()+"Planets");
 if (planets > planetMax) planets = planetMax;
 if (planets < 1) planets = planetMid;
+pars.left = tools.getInt("left", 50);
+pars.right = tools.getInt("right", 50);
 
 // local data object, to build from parameters
 BitSet filter = null;
 if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
 final FieldText ftext = alix.fieldText(field);
 final FieldRail frail = alix.fieldRail(field);
-final int context = (pars.context + 1) / 2;
 FormEnum results = new FormEnum(ftext); // build a wrapper to have results
-results.left = context; // left context
-results.right = context; // right context
 results.filter = filter; // limit to some documents
 results.tags = pars.cat.tags(); // limit word list to SUB, NAME, adj
 results.mi = pars.mi; // best ranking for coocs
@@ -199,6 +198,8 @@ boolean first;
     Node[] toloop = nodeMap.values().toArray(new Node[nodeMap.size()]);
     pars.q = "";
     results.limit = pars.nodes + starCount; // take more coccs we need
+    results.left = pars.left;
+    results.right = pars.right;
     for (Node src: toloop) {
       if (first) first = false;
       else pars.q += " ";
@@ -226,9 +227,9 @@ boolean first;
   }
   else { // 
 
-    FormEnum top = null;
     // a book selected, g test seems better, with no stops
-    top = ftext.results(pars.nodes, pars.cat.tags(), pars.distrib.scorer(), filter, false);
+    FormEnum top = ftext.results(pars.cat.tags(), pars.distrib.scorer(), filter);
+    top.sort(FormEnum.Sorter.score, pars.nodes, false);
     while (top.hasNext()) {
       top.next();
       final int formId = top.formId();
@@ -256,26 +257,35 @@ boolean first;
   
   %>
 <!-- Nodes <%= ((System.nanoTime() - time) / 1000000.0) %> ms  -->
-       <form id="form" class="search">
-           <label for="nodes" title="Nombre de nœuds sur l’écran">Mots</label>
-           <input name="nodes" type="text" value="<%= pars.nodes %>" class="num3" size="2"/>
-           <label title="Filtrer les mots par catégories grammaticales" for="cat">Catégories</label>
-           <select name="cat" onchange="this.form.submit()">
-             <option/>
-             <%=pars.cat.options()%>
-           </select>
-           <label for="context" title="Largeur du contexte, en nombre de mots, dont sont extraits les liens">Contexte</label>
-           <input name="context" type="text" value="<%= pars.context %>"  class="num3" size="2"/>
-           <label for="planets" title="Nombre maximum de liens sortants par nœud">Compacité</label>
-           <input type="text" name="planets" value="<%=planets%>"  class="num3" size="2"/>
-           <button type="submit">▼</button>
-           <br/>
-           <label for="words">Chercher</label>
-           <input type="text" class="q" name="q" value="<% JspTools.escape(out, pars.q); %>" size="40" />
-           <label for="book">Livre</label>
-           <%= selectBook(alix, pars.book) %>
-          <a class="help button" href="#aide">?</a>
-        </form>
+      <form id="form" class="search">
+        <%= selectCorpus(alix.name) %>
+        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
+        <%= selectBook(alix, pars.book) %>
+        <button type="submit">▶</button>
+        
+        <br/>
+        <input name="nodes" type="text" value="<%= pars.nodes %>" class="num3" size="2"/>
+        <select name="f" onchange="this.form.submit()">
+          <option/>
+          <%=pars.field.options()%>
+        </select>
+        <label for="cat" title="Filtrer les mots par catégories grammaticales">filtre</label>
+        <select name="cat" onchange="this.form.submit()">
+          <option/>
+          <%=pars.cat.options()%>
+        </select>
+        <label for="left" title="Largeur du contexte dont sont extraits les liens, en nombre de mots, à gauche">Contexte gauche</label>
+        <input name="left" value="<%=pars.left%>" size="1" class="num3"/>
+        <label for="right" title="Nombre de mots à capturer à droite">à droite</label>
+        <input name="right" value="<%=pars.right%>" size="1" class="num3"/>
+        <label for="planets" title="Nombre maximum de liens sortants par nœud">Compacité</label>
+        <input type="text" name="planets" value="<%=planets%>"  class="num3" size="2"/>
+        <a class="help button" href="#aide">?</a>
+        
+         <br/>
+         <label for="words">Chercher</label>
+         <input type="text" class="q" name="q" value="<% JspTools.escape(out, pars.q); %>" size="40" />
+      </form>
       <div id="graph" class="graph" oncontextmenu="return false">
       </div>
        <div class="butbar">
@@ -342,6 +352,8 @@ int edgeId = 0;
  
 // Set<Node> nodeSet = new TreeSet<Node>(starSet);
 results.limit = nodeMap.size() * 2; // collect enough edges
+results.left = pars.left;
+results.right = pars.right;
 for (Node src: nodeMap.values()) {
   results.search = new String[]{src.form}; // set pivot of the coocs
   long found = frail.coocs(results);
@@ -388,11 +400,11 @@ for (Node node: nodeMap.values()) {
    // else if (Tag.isAdj(tag)) color = "rgba(255, 128, 0, 1)";
    else color = "rgba(0, 0, 0, 0.8)";
    // {id:'n204', label:'coeur', x:-16, y:99, size:86, color:'hsla(0, 86%, 42%, 0.95)'},
-   out.print("    {id:'n" + node.formId + "', label:'" + node.form.replace("'", "\\'") + "', size:" + dfdec2.format(10 * node.count)); // node.count
+   out.print("    {id:'n" + node.formId + "', label:'" + node.form.replace("'", "\\'") + "', size:" + (10 * node.count)); // node.count
    out.print(", x:" + ((int)(Math.random() * 100)) + ", y:" + ((int)(Math.random() * 100)) );
    if (node.type() == STAR) out.print(", type:'hub'");
    out.print(", color:'" + color + "'");
-   out.println("}");
+   out.print("}");
  }
  out.println("\n  ]");
 

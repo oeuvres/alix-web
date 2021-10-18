@@ -58,7 +58,7 @@ final static DecimalFormatSymbols ensyms = DecimalFormatSymbols.getInstance(Loca
 static final DecimalFormat frdec = new DecimalFormat("###,###,###,###", frsyms);
 
 static final DecimalFormat dfdec3 = new DecimalFormat("0.000", ensyms);
-static final DecimalFormat dfdec2 = new DecimalFormat("###,###,###,##0.00", ensyms);
+static final DecimalFormat dfdec2 = new DecimalFormat("0.00", ensyms);
 static final DecimalFormat frdec2 = new DecimalFormat("###,###,###,##0.00", frsyms);
 static final DecimalFormat dfdec1 = new DecimalFormat("0.0", ensyms);
 static final DecimalFormat dfdec5 = new DecimalFormat("0.0000E0", ensyms);
@@ -95,7 +95,8 @@ static String formatScore(double real)
   return frdec2.format(real);
 }
 
-static public enum Order implements Option {
+/*
+static public enum Direction implements Option {
   top("Score, haut"), 
   last("Score, bas"), 
   ;
@@ -107,6 +108,7 @@ static public enum Order implements Option {
   public String label() { return label; }
   public String hint() { return null; }
 }
+*/
 
 public enum Field implements Option 
 {
@@ -147,14 +149,14 @@ public class Pars {
   String book; // restrict to a book
   String q; // word query
   Cat cat; // word categories to filter
-  Mime mime; // mime type for output
+  Order order;// results, reverse
   int limit; // results, limit of result to show
   int nodes; // number of nodes in wordnet
-  Order order;// results, reverse
   int context; // coocs, context width in words
   int left; // coocs, left context in words
   int right; // coocs, right context in words
   boolean expression; // kwic, filter multi word expression
+  Mime mime; // mime type for output
 
   // too much scoring algo
   Distrib distrib; // ranking algorithm, tf-idf like
@@ -188,7 +190,7 @@ public Pars pars(final PageContext page)
   pars.sim = (Sim)tools.getEnum("sim", Sim.g);
   pars.sort = (DocSort)tools.getEnum("sort", DocSort.year);
   //final FacetSort sort = (FacetSort)tools.getEnum("sort", FacetSort.freq, Cookies.freqsSort);
-  pars.order = (Order)tools.getEnum("order", Order.top);
+  pars.order = (Order)tools.getEnum("order", Order.score, "alixOrder");
   
   
   
@@ -197,9 +199,7 @@ public Pars pars(final PageContext page)
   pars.mime = (Mime)tools.getEnum("format", Mime.html);
   
 
-  final int limitMax = 500;
-  pars.limit = tools.getInt("limit", limitMax);
-  if (pars.limit < 1) pars.limit = limitMax;
+  pars.limit=100;
   
   final int nodesMax = 300;
   final int nodesMid = 50;
@@ -207,15 +207,15 @@ public Pars pars(final PageContext page)
   if (pars.nodes < 1) pars.nodes = nodesMid;
   if (pars.nodes > nodesMax) pars.nodes = nodesMax;
   
-  // limit a bit if not csv
-  if (pars.mime == Mime.csv);
-  else if (pars.limit < 1 || pars.limit > limitMax) pars.limit = limitMax;
-  
   // coocs
-  pars.left = tools.getInt("left", 0);
-  pars.right = tools.getInt("right", 0);
+  pars.left = tools.getInt("left", 5);
+  pars.right = tools.getInt("right", 5);
   if (pars.left < 0) pars.left = 0;
   if (pars.right < 0) pars.right = 0;
+  if (pars.left + pars.right == 0) {
+    pars.left = 5;
+    pars.right = 5;
+  }
   /*
   else if (pars.left > 10) pars.left = 50;
   pars.right = tools.getInt("right", 5);
@@ -249,6 +249,31 @@ public Pars pars(final PageContext page)
 
 
   return pars;
+}
+
+/**
+ * Corpus selecto
+ */
+public String selectCorpus(final String corpusid)
+{
+  StringBuilder sb = new StringBuilder();
+  if (Alix.pool.size() == 1) {
+    for (Map.Entry<String, Alix> entry : Alix.pool.entrySet()) {
+      sb.append("<strong>"+entry.getValue().props.get("label")+"</strong>");
+    }
+  }
+  else {
+    sb.append("<label for=\"corpus\" title=\"Choisir une base de textes\">Corpus</label>\n");
+    sb.append("<select name=\"corpus\" oninput=\"this.form.submit();\">\n");
+    for (Map.Entry<String, Alix> entry : Alix.pool.entrySet()) {
+      String value = entry.getKey();
+      sb.append("<option value=\"" + value + "\"");
+      if (value.equals(corpusid)) sb.append(" selected=\"selected\"");
+      sb.append(">" + entry.getValue().props.get("label") + "</option>\n");
+    }
+    sb.append("</select>\n");
+  }
+  return sb.toString();
 }
 
 /**
@@ -293,7 +318,7 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
   FieldText fieldText = alix.fieldText(pars.field.name());
 
   boolean reverse = false;
-  if (pars.order == Order.last) reverse = true;
+  // if (pars.order == Order.last) reverse = true;
 
   FormEnum results = null;
   if (pars.q != null) {
@@ -324,8 +349,11 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
   else {
     // final int limit, Specif specif, final BitSet filter, final TagFilter tags, final boolean reverse
     // dic = fieldText.iterator(pars.limit, pars.ranking.specif(), filter, pars.cat.tags(), reverse);
-    results = fieldText.results(pars.limit, pars.cat.tags(), pars.distrib.scorer(), filter, reverse);
+    // pars.distrib.scorer()
+    results = fieldText.results(pars.cat.tags(), Distrib.bm25.scorer(), filter);
+    
   }
+  results.sort(pars.order.sorter(), pars.limit, reverse);
   return results;
 }
 
@@ -333,15 +361,16 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
 <%
 long time = System.nanoTime();
 // Common to all pages, get an alix base and other shared data
-// Default base name, first in the pool
-String baseDefault = "alix";
-if (Alix.pool.size() > 0) {
-  baseDefault = (String)Alix.pool.keySet().toArray()[0];
-}
 JspTools tools = new JspTools(pageContext);
-Alix alix = (Alix)tools.getMap("base", Alix.pool, baseDefault, "alixBase");
-IndexReader reader = alix.reader();
 //get default parameters from request
 Pars pars = pars(pageContext);
+//Default base name, first in the pool
+String corpusDefault = "alix";
+if (Alix.pool.size() > 0) {
+  corpusDefault = (String)Alix.pool.keySet().toArray()[0];
+}
+Alix alix = (Alix)tools.getMap("corpus", Alix.pool, corpusDefault, "alixCorpus");
+
+IndexReader reader = alix.reader();
 
 %>

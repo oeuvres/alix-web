@@ -23,12 +23,13 @@ FieldText fstats = alix.fieldText(pars.field.name());
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
 	    <form id="qform"  class="search">
-	      <label>Rechercher <input id="q" name="q" value="<%=JspTools.escape(pars.q)%>" width="100" autocomplete="off"/>
+        <%= selectCorpus(alix.name) %>
+	      <label>Rechercher <input id="q" class="q" name="q" value="<%=JspTools.escape(pars.q)%>" width="100" autocomplete="off"/>
 	      </label>
 	      <label>Ordonner
 	         <select name="sort" onchange="this.form.submit()">
 	          <option/>
-	  <%= pars.sort.options("score year year_inv") %>
+	          <%= pars.sort.options("score year year_inv") %>
 	          </select>
 	      </label>
 	      <button type="submit">▶</button>

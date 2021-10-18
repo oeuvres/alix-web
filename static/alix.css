@@ -34,6 +34,8 @@
  * Colors and fonts
  */
 
+/* floatfix */
+#graphcount::after,
 body::after,
 main::after,
 div.row::after,
@@ -134,10 +136,16 @@ input {
 
 html,
 body {
-  height: 100%;
   width: 100%;
   padding: 0;
   margin: 0;
+}
+
+html {
+  height: 100%;
+}
+body {
+  width: 100%;
 }
 
 body,
@@ -239,7 +247,7 @@ input.q {
   font-weight: bold;
   font-size: 120%;
   padding: 2px 1em;
-  margin: 10px 0 0 0;
+  margin: 10px 0 10px 0;
   border-color: var(--text) !important;
 }
 
@@ -384,7 +392,6 @@ main {
   display: flex;
   position: relative;
   justify-content: center;
-  background-color: var(--light);
 }
 
 article.text,
@@ -834,8 +841,8 @@ details {
  */
 
 article.kwic header {
-  background-color: var(--bg3);
-  color: var(--text3);
+  color: var(--textlo);
+  border-bottom: 1px solid var(--textlo);
   text-align: left;
   margin: 1rem 0 0.2rem 0;
   line-height: 120%;
@@ -844,7 +851,7 @@ article.kwic header {
 }
 
 article.kwic header a {
-  color: #000;
+  color: var(--textlo);
 }
 article.kwic header b,
 article.kwic header small {
@@ -863,16 +870,17 @@ article.kwic header a:hover {
 
 div.line a {
   font-weight: bold;
+  color: var(--link);
+}
+article.kwic div.line a:hover {
+  text-decoration: none;
 }
 
 article.kwic div.line {
   white-space: nowrap;
 }
 
-article.kwic div.line a:hover {
-  text-decoration: none;
-  color: #000;
-}
+
 
 article.kwic .surname {
   font-variant: small-caps;
@@ -1192,6 +1200,7 @@ body.chrono form {
 
 
 body.wordnet {
+  height: 100%;
 }
 
 #graphcont {

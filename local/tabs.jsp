@@ -6,10 +6,10 @@
 <%!
 static public enum Tab {
   index("<strong>Alix, démo</strong>", "index.jsp", "Présentation", new String[]{}) { },
-  freqs("Table", "table.jsp", "Fréquences par mots", new String[]{"q", "f", "book", "cat", "right", "left"}) { },
-  cloud("Nuage", "nuage.jsp", "Nuage de mots", new String[]{"q", "f", "book", "cat", "context"}) { },
-  books("Livres", "livres.jsp", "Fréquences par livres/compilations", new String[]{"q", "f"}) { },
-  chapters("Chapitres", "chapitres.jsp", "Fréquences par texte (chapitres, articles)", new String[]{"q", "f"}) { },
+  freqs("Table", "table.jsp", "Fréquences par mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
+  cloud("Nuage", "nuage.jsp", "Nuage de mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
+  books("Livres", "livres.jsp", "Fréquences par livres/compilations", new String[]{"f", "q"}) { },
+  chapters("Chapitres", "chapitres.jsp", "Fréquences par texte (chapitres, articles)", new String[]{"f", "q"}) { },
   kwic("Concordance", "conc.jsp", "Recherche de mot", new String[]{"q", "book"}) { },
   doc("Liseuse", "doc.jsp", "Lire un texte", new String[]{"id", "q"}) { },
   wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"q", "book", "cat", "right", "left"}) { },
@@ -73,18 +73,4 @@ static public enum Tab {
 %>
 <nav class="tabs">
   <%= Tab.nav(request) %>
-  <form class="base">Corpus
-    <select  name="base" oninput="this.form.submit();">
-    <%
-    JspTools retools = new JspTools(pageContext);
-    String base = retools.getString("base", "rougemont", "alixBase");
-    for (Map.Entry<String, Alix> entry : Alix.pool.entrySet()) {
-      String value = entry.getKey();
-      out.print("<option value=\"" + value + "\"");
-      if (value.equals(base)) out.print(" selected=\"selected\"");
-      out.println(">" + entry.getValue().props.get("label") + "</option>");
-    }
-    %>
-    </select>
-  </form>
 </nav>

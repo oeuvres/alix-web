@@ -4,7 +4,8 @@
 //global variables
 FieldFacet facet = alix.fieldFacet(Alix.BOOKID, pars.field.name());
 String[] search = alix.forms(pars.q);
-FormEnum results = facet.iterator(search, null, pars.distrib.scorer(), -1);
+FormEnum results = facet.results(search, null, pars.distrib.scorer());
+results.sort(FormEnum.Sorter.score, -1, false);
 
 %>
 <!DOCTYPE html>
@@ -17,7 +18,8 @@ FormEnum results = facet.iterator(search, null, pars.distrib.scorer(), -1);
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
       <form  class="search">
-       <label for="q" title="Classer les livres selon un ou plusieurs mots">Chercher</label>
+        <%= selectCorpus(alix.name) %>
+        <label for="q" title="Classer les livres selon un ou plusieurs mots">Chercher</label>
         <input name="q" class="q" onclick="this.select()" type="text" value="<%=tools.escape(pars.q)%>" size="40" />
         <select name="f" onchange="this.form.submit()">
           <option/>

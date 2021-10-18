@@ -15,13 +15,19 @@ FormEnum results = freqList(alix, pars);
       <form class="search" action="#">
         <a  class="icon" href="csv.jsp?<%= tools.url(new String[]{"q", "cat", "book", "left", "right", "distrib", "mi"}) %>"><img src="static/icon_csv.svg" alt="Export intégral des données au format "></a>
         <a class="icon" href="tableur.jsp?<%= tools.url(new String[]{"q", "cat", "book", "left", "right", "distrib", "mi", "limit"}) %>"><img src="static/icon_excel.svg" alt="Export des données visibles pour Excel"></a>
-        <input type="hidden" name="order" value="<%=pars.order%>"/>
+        <%= selectCorpus(alix.name) %>
+        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
+        <%= selectBook(alix, pars.book) %>
+        
+        <button type="submit">▶</button>
+        
+        <br/>
         <input name="limit" type="text" value="<%= pars.limit %>" class="num3" size="2"/>
         <select name="f" onchange="this.form.submit()">
           <option/>
           <%=pars.field.options()%>
         </select>
-        <label for="cat" title="Filtrer les mots par catégories grammaticales">Catégories</label>
+        <label for="cat" title="Filtrer les mots par catégories grammaticales">filtre</label>
         <select name="cat" onchange="this.form.submit()">
           <option/>
           <%=pars.cat.options()%>
@@ -46,9 +52,14 @@ FormEnum results = freqList(alix, pars);
 
                     */
              %>
-        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
-        <%= selectBook(alix, pars.book) %>
-        <button type="submit">▶</button>
+        <label for="order" title="Sélectionner et ordonner le tableau selon une colonne">Trié par</label>
+        <select name="order" onchange="this.form.submit()">
+          <option/>
+          <%
+          if (pars.book != null || pars.q != null) out.println(pars.order.options("score freq hits occs docs"));
+          else out.println(pars.order.options("score freq hits"));
+          %>
+        </select>
         <br/>
         <label for="q" title="Mots fréquents autour d’un ou plusieurs mots">Co-occurrents de</label>
         <input name="q" class="q" onclick="this.select()" type="text" value="<%=tools.escape(pars.q)%>" size="40" />

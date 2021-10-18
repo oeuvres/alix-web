@@ -4,12 +4,15 @@
 <%@include file="jsp/prelude.jsp" %>
 <%
 // params for the page
+int max = 100;
 pars.limit = tools.getInt("limit", 50);
-String field = "text";
+if (pars.limit > max) pars.limit = max;
 
 int docId = tools.getInt("docid", -1); // get doc by lucene internal docId or persistant String id
 String id = tools.getString("id", "");
 String q = tools.getString("q", null); // if no doc, get params to navigate in a results series
+
+String field = "text";
 
 Doc doc = null;
 try { // load full document
@@ -52,7 +55,6 @@ if (doc != null) { // document id is verified, give it to javascript
   <body class="document">
     <header>
       <%@ include file="local/tabs.jsp" %>
-    </header>
       <form class="search" id="search" autocomplete="off" action="#" role="search">
       <!-- 
         <button name="magnify" type="button">
@@ -66,7 +68,8 @@ if (doc != null) { // document id is verified, give it to javascript
           </svg>
         </button>
        -->
-        <label>Chercher un titre</label>
+        <%= selectCorpus(alix.name) %>
+        <label for="titles">Chercher un titre</label>
         <input id="titles" name="titles" aria-describedby="titles-hint" placeholder="am… dia… eu… fed…" size="50"/>
         <div class="progress"><div></div></div>
         <div class="suggest"></div>
@@ -104,8 +107,9 @@ if (doc != null) { // document id is verified, give it to javascript
         }
                */
         %>
-        </form>
-      <main>
+      </form>
+    </header>
+    <main>
       <div class="row">
         <nav class="terms" id="sidebar">
         <%
@@ -113,7 +117,8 @@ if (doc != null) { // document id is verified, give it to javascript
         if (doc != null) {
           out.println(" <h5>Mots clés</h5>");
           BooleanQuery.Builder qBuilder = new BooleanQuery.Builder();
-          FormEnum forms = doc.results(field, pars.limit, pars.cat.tags(), pars.distrib.scorer(), false);
+          FormEnum forms = doc.results(field, pars.distrib.scorer(), pars.cat.tags());
+          forms.sort(FormEnum.Sorter.score, pars.limit, false);
           int no = 1;
           forms.reset();
           while (forms.hasNext()) {
