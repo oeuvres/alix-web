@@ -12,7 +12,7 @@ static public enum Tab {
   chapters("Chapitres", "chapitres.jsp", "Fréquences par texte (chapitres, articles)", new String[]{"f", "q"}) { },
   kwic("Concordance", "conc.jsp", "Recherche de mot", new String[]{"q", "book"}) { },
   doc("Liseuse", "doc.jsp", "Lire un texte", new String[]{"id", "q"}) { },
-  wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"q", "book", "cat", "right", "left"}) { },
+  wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
   ;
 
   final public String label;

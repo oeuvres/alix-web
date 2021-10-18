@@ -2,7 +2,6 @@
 <%@ include file="jsp/prelude.jsp" %>
 <%
 // get default parameters from request
-Pars pars = pars(pageContext);
 %>
 <!DOCTYPE html>
 <html>

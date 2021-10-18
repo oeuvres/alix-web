@@ -2,6 +2,8 @@
 <%@ include file="jsp/prelude.jsp" %>
 <%
 FormEnum results = freqList(alix, pars);
+results.sort(pars.order.sorter(), pars.limit);
+out.println(results.fieldName);
 %>
 <!DOCTYPE html>
 <html>
@@ -18,10 +20,10 @@ FormEnum results = freqList(alix, pars);
         <%= selectCorpus(alix.name) %>
         <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
         <%= selectBook(alix, pars.book) %>
-        
         <button type="submit">▶</button>
         
         <br/>
+
         <input name="limit" type="text" value="<%= pars.limit %>" class="num3" size="2"/>
         <select name="f" onchange="this.form.submit()">
           <option/>
@@ -52,7 +54,7 @@ FormEnum results = freqList(alix, pars);
 
                     */
              %>
-        <label for="order" title="Sélectionner et ordonner le tableau selon une colonne">Trié par</label>
+        <label for="order" title="Sélectionner et ordonner le tableau selon une colonne">rangés par</label>
         <select name="order" onchange="this.form.submit()">
           <option/>
           <%
@@ -72,7 +74,7 @@ FormEnum results = freqList(alix, pars);
     <main>
       <table class="sortable" width="100%">
         <caption>
-        Lecture : 
+        Lecture :
         <%
         String title = null;
         if (pars.book != null && !pars.book.trim().equals("")) {

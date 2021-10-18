@@ -41,8 +41,6 @@ static private int FREQ_FLOOR = 5;
 /** default number of focus on load */
 static int starsDefault = 15;
 
-
-
 private static final int STAR = 2; // confirmed star
 private static final int NEBULA = 1; // candidate star
 private static final int COMET = -1; // floating corp
@@ -118,31 +116,33 @@ static class Node implements Comparable<Node>
 %>
 <%
 // global data handlers
-String field = "text";
+String field = pars.field.name();
 /*
 int starsCount = tools.getInt("stars", starsDefault);
 if (starsCount < 1) starsCount = starsDefault;
 else if (starsCount > starsMax) starsCount = starsMax;
 */
 
-
+// the consistency magic
 final int planetMax = 50;
 final int planetMid = 5;
 int planets = tools.getInt("planets", planetMid, alix.name()+"Planets");
 if (planets > planetMax) planets = planetMax;
 if (planets < 1) planets = planetMid;
+
 pars.left = tools.getInt("left", 50);
 pars.right = tools.getInt("right", 50);
 
-// local data object, to build from parameters
-BitSet filter = null;
-if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
+// for consistency, same freqlist as table.php
+// this list will be reused to get the matrix of distances
+FormEnum freqList = freqList(alix, pars);
+// don’t forget to sort, with a limit
+freqList.sort(pars.order.sorter(), pars.limit);
+
 final FieldText ftext = alix.fieldText(field);
 final FieldRail frail = alix.fieldRail(field);
-FormEnum results = new FormEnum(ftext); // build a wrapper to have results
-results.filter = filter; // limit to some documents
-results.tags = pars.cat.tags(); // limit word list to SUB, NAME, adj
-results.mi = pars.mi; // best ranking for coocs
+
+
 boolean first;
 
 %>
@@ -168,13 +168,20 @@ boolean first;
       <header>
         <jsp:include page="local/tabs.jsp"/>
       </header>
-
   <%
-    // keep nodes in insertion order (especially for query)
+  // keep nodes in insertion order (especially for query)
   Map<Integer, Node> nodeMap = new LinkedHashMap<Integer, Node>();
-
+  int i = 0;
+  freqList.reset();
+  while (freqList.hasNext()) {
+    freqList.next();
+    final int formId = freqList.formId();
+    // add a linked node candidate
+    nodeMap.put(formId, new Node(formId, freqList.form()).count(freqList.freq()).type(COMET));
+    if (++i >= 500) break;
+  }
+  /*
   // Select nodes in the cooccurrence
-  results.scorer = null;
   if (pars.q != null && !pars.q.trim().isEmpty()) { // words requested, search for them
     String[] forms = alix.forms(pars.q); // parse query as a set of terms
     // rewrite queries, with only known terms
@@ -182,9 +189,8 @@ boolean first;
     for (String form: forms) {
       int formId = ftext.formId(form);
       if (formId < 0) continue;
-      final long freq;
-      if (pars.book != null) freq = results.freq(formId);
-      else freq = ftext.occs(formId);
+      final long freq = freqList.freq(formId);
+      // requested form not found
       if (freq < 1) continue;
       // keep query words as stars
       nodeMap.put(formId, new Node(formId, form).count(freq).type(STAR));
@@ -197,48 +203,49 @@ boolean first;
     int i = 1;
     Node[] toloop = nodeMap.values().toArray(new Node[nodeMap.size()]);
     pars.q = "";
-    results.limit = pars.nodes + starCount; // take more coccs we need
-    results.left = pars.left;
-    results.right = pars.right;
+    freqList.limit = pars.nodes + starCount; // take more coccs we need
+    freqList.left = pars.left;
+    freqList.right = pars.right;
+    // Something is done here but not enough documented
     for (Node src: toloop) {
       if (first) first = false;
       else pars.q += " ";
       pars.q += src.form;
-      results.search = new String[]{src.form}; // parse query as terms
-      long found = frail.coocs(results);
+      freqList.search = new String[]{src.form}; // parse query as terms
+      long found = frail.coocs(freqList);
       if (found < 0) continue;
-      // score the coocs found before loop on it
-      frail.score(results, ftext.occs(src.formId));
+      // score the coocs found, then loop on it
+      frail.score(freqList, -1); // why this limit ? ftext.occs(src.formId)
       final int srcId = src.formId;
       final long srcFreq = src.count; // local freq
 
       final int countMax = (int)((double)pars.nodes * i / starCount);
       i++;
-      while (results.hasNext()) {
-    results.next();
-    final int dstId = results.formId();
-    final Node dst = nodeMap.get(dstId);
-    if (dst != null) continue; // node already found
-    Node comet = new Node(dstId, results.form()).count(results.freq()).type(COMET);
-    nodeMap.put(dstId, comet);
-    if (++nodeCount >= countMax) break;
+      freqList.reset();
+      while (freqList.hasNext()) {
+        freqList.next();
+        final int dstId = freqList.formId();
+        final Node dst = nodeMap.get(dstId);
+        if (dst != null) continue; // node already found
+        Node comet = new Node(dstId, freqList.form()).count(freqList.freq()).type(COMET);
+        nodeMap.put(dstId, comet);
+        if (++nodeCount >= countMax) break;
       }
     }
   }
   else { // 
-
-    // a book selected, g test seems better, with no stops
-    FormEnum top = ftext.results(pars.cat.tags(), pars.distrib.scorer(), filter);
-    top.sort(FormEnum.Sorter.score, pars.nodes, false);
-    while (top.hasNext()) {
-      top.next();
-      final int formId = top.formId();
+    int i = 0;
+    freqList.reset();
+    while (freqList.hasNext()) {
+      freqList.next();
+      final int formId = freqList.formId();
       // add a linked node candidate
-      nodeMap.put(formId, new Node(formId, top.form()).count(top.freq()).type(COMET));
+      nodeMap.put(formId, new Node(formId, freqList.form()).count(freqList.freq()).type(COMET));
+      if (++i >= 500) break;
     }
     
   }
-  
+  */
   /*
            <label for="distrib" title="Algorithme d’ordre des mots pivots">Score</label>
            <select name="distrib" onchange="this.form.submit()">
@@ -274,6 +281,13 @@ boolean first;
           <option/>
           <%=pars.cat.options()%>
         </select>
+        <label for="order" title="Sélectionner et ordonner le tableau selon une colonne">rangés par</label>
+        <select name="order" onchange="this.form.submit()">
+          <option/>
+          <%= pars.order.options("score freq hits")%>
+        </select>
+        
+        <br/>
         <label for="left" title="Largeur du contexte dont sont extraits les liens, en nombre de mots, à gauche">Contexte gauche</label>
         <input name="left" value="<%=pars.left%>" size="1" class="num3"/>
         <label for="right" title="Nombre de mots à capturer à droite">à droite</label>
@@ -311,26 +325,26 @@ boolean first;
     </div>
     <%
     /* debug
-    results.specif = null;
-    out.println(results.mi);
-    results.limit = nodeMap.size() * 2; // collect enough edges
+    freqList.specif = null;
+    out.println(freqList.mi);
+    freqList.limit = nodeMap.size() * 2; // collect enough edges
     for (Node src: nodeMap.values()) {
-      results.search = new String[]{src.form}; // set pivot of the coocs
-      long found = frail.coocs(results);
+      freqList.search = new String[]{src.form}; // set pivot of the coocs
+      long found = frail.coocs(freqList);
       if (found < 0) continue;
       // score the coocs found before loop on it
-      frail.score(results, ftext.occs(src.formId));
+      frail.score(freqList, ftext.occs(src.formId));
       final int srcId = src.formId;
       int count = 0;
-      while (results.hasNext()) {
-        results.next();
-        final int dstId = results.formId();
+      while (freqList.hasNext()) {
+        freqList.next();
+        final int dstId = freqList.formId();
         if (srcId == dstId) continue;
         // link only selected nodes
         final Node dst = nodeMap.get(dstId);
         if (dst == null) continue;
-        out.println("<li>" + ftext.form(srcId) + " => " + ftext.form(dstId) + " (" + results.freq() + ") " + results.score() + " partOccs=" + results.partOccs + " dst frq=" 
-        + results.formOccs() +"</li>"); 
+        out.println("<li>" + ftext.form(srcId) + " => " + ftext.form(dstId) + " (" + freqList.freq() + ") " + freqList.score() + " partOccs=" + freqList.partOccs + " dst frq=" 
+        + freqList.formOccs() +"</li>"); 
         if (src.type() != STAR &&  count == planets) break;
         count++;
       }
@@ -351,20 +365,20 @@ int edgeId = 0;
 
  
 // Set<Node> nodeSet = new TreeSet<Node>(starSet);
-results.limit = nodeMap.size() * 2; // collect enough edges
-results.left = pars.left;
-results.right = pars.right;
+freqList.limit = nodeMap.size() * 2; // collect enough edges
+freqList.left = pars.left;
+freqList.right = pars.right;
 for (Node src: nodeMap.values()) {
-  results.search = new String[]{src.form}; // set pivot of the coocs
-  long found = frail.coocs(results);
+  freqList.search = new String[]{src.form}; // set pivot of the coocs
+  long found = frail.coocs(freqList);
   if (found < 1) continue;
   // score the coocs found before loop on it
   final int srcId = src.formId;
-  frail.score(results, ftext.occs(srcId));
+  frail.score(freqList, ftext.occs(srcId));
   int count = 0;
-  while (results.hasNext()) {
-    results.next();
-    final int dstId = results.formId();
+  while (freqList.hasNext()) {
+    freqList.next();
+    final int dstId = freqList.formId();
     if (srcId == dstId) continue;
     // link only selected nodes
     final Node dst = nodeMap.get(dstId);
@@ -373,9 +387,9 @@ for (Node src: nodeMap.values()) {
     if (dst.type() == COMET) dst.type(PLANET);
     if (first) first = false;
     else out.println(", ");
-    out.print("    {id:'e" + (edgeId++) + "', source:'n" + srcId + "', target:'n" + dstId + "', size:" + results.score() 
+    out.print("    {id:'e" + (edgeId++) + "', source:'n" + srcId + "', target:'n" + dstId + "', size:" + freqList.score() 
     + ", color:'rgba(128, 128, 128, 0.2)'"
-    + ", srcLabel:'" + ftext.form(srcId).replace("'", "\\'") + "', srcOccs:" + ftext.occs(srcId) + ", dstLabel:'" + ftext.form(dstId).replace("'", "\\'") + "', dstOccs:" + ftext.occs(dstId) + ", freq:" + results.freq()
+    + ", srcLabel:'" + ftext.form(srcId).replace("'", "\\'") + "', srcOccs:" + ftext.occs(srcId) + ", dstLabel:'" + ftext.form(dstId).replace("'", "\\'") + "', dstOccs:" + ftext.occs(dstId) + ", freq:" + freqList.freq()
     + "}");
     if (src.type() != STAR &&  count == planets) break;
     count++;
@@ -437,7 +451,7 @@ else {
 }
 if (pars.q == null && pars.book != null) {
   out.println(
-      " Les mots reliés sont les plus significatifs du livre relativement au reste de la base,"
+      " Les visibles sont les plus significatifs du livre relativement au reste de la base,"
     + " selon un calcul de distance statistique "
     + " (<i><a href=\"https://en.wikipedia.org/wiki/G-test\">G-test</a></i>, "
     + " voir <a class=\"b\" href=\"index.jsp?book=" + pars.book + "&amp;cat=STRONG&amp;ranking=g\">les résultats</a>)."

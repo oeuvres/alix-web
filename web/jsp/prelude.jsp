@@ -221,20 +221,6 @@ public Pars pars(final PageContext page)
   pars.right = tools.getInt("right", 5);
   else if (pars.right > 10) pars.right = 50;
   */
-  pars.context = tools.getInt("context", -1);
-  if (pars.context > 0 ) {
-    if (pars.context < 3) pars.context = 3;
-    pars.left = pars.context / 2;
-    pars.right = pars.context / 2;
-  }
-  else if (pars.left > 1 || pars.right > 1) {
-    pars.context = 1 + pars.left + pars.right;
-  }
-  else {
-    pars.context = 100;
-    pars.left = 5;
-    pars.right = 5;
-  }
   
   // paging
   final int hppDefault = 100;
@@ -314,6 +300,7 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
   Corpus corpus = null;
   BitSet filter = null; // if a corpus is selected, filter results with a bitset
   if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
+  
 
   FieldText fieldText = alix.fieldText(pars.field.name());
 
@@ -325,22 +312,25 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
     FieldRail rail = alix.fieldRail(pars.field.name()); // get the tool for cooccurrences
     // prepare a result object to populate with co-occurences
     results = new FormEnum(fieldText); 
-    results.search = alix.forms(pars.q); // parse query as terms
+    // parames for rail
+    results.filter = filter; // book filter
+    results.left = pars.left; // left context
+    results.right = pars.right; // right context
+    results.tags = pars.cat.tags(); // filter word list by tags
+    results.search = alix.forms(pars.q, pars.field.name()); // parse query as terms
+    // for stats, global freq of searched terms
     int pivotsOccs = 0;
     for (String form: results.search) {
       pivotsOccs += fieldText.occs(form);
     }
-    results.left = pars.left; // left context
-    results.right = pars.right; // right context
-    results.filter = filter; // limit to some documents
-    results.tags = pars.cat.tags(); // limit word list by tags
     long found = rail.coocs(results); // populate the wordlist
     if (found > 0) {
       // parameters for sorting
       results.limit = pars.limit;
-      results.mi = pars.mi;
+      results.mi = MI.g; // hard coded mutual-info algo, seems the best
       results.reverse = reverse;
       rail.score(results, pivotsOccs);
+      // throw new IllegalArgumentException("rail.fieldName="+rail.fieldName);
     }
     else {
       // if nothing found, what should be done ?
@@ -350,10 +340,12 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
     // final int limit, Specif specif, final BitSet filter, final TagFilter tags, final boolean reverse
     // dic = fieldText.iterator(pars.limit, pars.ranking.specif(), filter, pars.cat.tags(), reverse);
     // pars.distrib.scorer()
-    results = fieldText.results(pars.cat.tags(), Distrib.bm25.scorer(), filter);
+    results = fieldText.results(pars.cat.tags(), Distrib.bm25.scorer(), filter); // hard coded distribution, seems the best
+    results.filter = filter; // keep en handle for later use
+    results.tags = pars.cat.tags(); // keep en handle for later use
     
   }
-  results.sort(pars.order.sorter(), pars.limit, reverse);
+  // is it good to sort freqList here ?
   return results;
 }
 

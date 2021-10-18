@@ -7,6 +7,8 @@ pars.limit = tools.getInt("limit", lim);
 if (pars.limit < 1) pars.limit = lim;
 if (pars.limit > max) pars.limit = max;
 FormEnum results = freqList(alix, pars);
+results.sort(pars.order.sorter(), pars.limit);
+
 %>
 <!DOCTYPE html>
 <html>

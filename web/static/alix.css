@@ -247,7 +247,7 @@ input.q {
   font-weight: bold;
   font-size: 120%;
   padding: 2px 1em;
-  margin: 10px 0 10px 0;
+  margin: 1px 0 1px 0;
   border-color: var(--text) !important;
 }
 
