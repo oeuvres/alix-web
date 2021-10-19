@@ -333,7 +333,7 @@ var graph = new sigmot('graph', data);
 Document doc = null;
 if (pars.book != null) {
   final int docId = alix.getDocId(pars.book);
-  doc = alix.reader().document(docId, BOOK_FIELDS);
+  if (docId > 0) doc = alix.reader().document(docId, BOOK_FIELDS);
 }
 if (doc != null) {
   final String title = doc.get("title");

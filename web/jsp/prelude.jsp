@@ -299,7 +299,11 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
 {
   Corpus corpus = null;
   BitSet filter = null; // if a corpus is selected, filter results with a bitset
-  if (pars.book != null) filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
+  if (pars.book != null) {
+    final int bookid = alix.getDocId(pars.book);
+    if (bookid < 0) pars.book = null;
+    else filter = Corpus.bits(alix, Alix.BOOKID, new String[]{pars.book});
+  }
   
 
   FieldText fieldText = alix.fieldText(pars.field.name());
