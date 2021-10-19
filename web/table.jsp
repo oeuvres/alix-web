@@ -20,7 +20,6 @@ results.sort(pars.order.sorter(), pars.limit);
         <a  class="icon" href="csv.jsp?<%= tools.url(new String[]{"q", "cat", "book", "left", "right", "distrib", "mi"}) %>"><img src="static/icon_csv.svg" alt="Export intégral des données au format "></a>
         <a class="icon" href="tableur.jsp?<%= tools.url(new String[]{"q", "cat", "book", "left", "right", "distrib", "mi", "limit"}) %>"><img src="static/icon_excel.svg" alt="Export des données visibles pour Excel"></a>
         <%= selectCorpus(alix.name) %>
-        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
         <%= selectBook(alix, pars.book) %>
         <button type="submit">▶</button>
         

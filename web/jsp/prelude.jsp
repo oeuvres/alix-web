@@ -270,6 +270,7 @@ public String selectCorpus(final String corpusid)
 public String selectBook(final Alix alix, String bookid) throws IOException
 {
   StringBuilder sb = new StringBuilder();
+  sb.append("<label for=\"book\" title=\"Limiter la sélection à un seul livre\">Livre</label>\n");
   sb.append("<select name=\"book\" onchange=\"this.form.submit()\">\n");
   sb.append("  <option value=\"\"></option>\n");
   int[] books = alix.books(sortYear);
