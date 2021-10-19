@@ -104,7 +104,7 @@ results.sort(pars.order.sorter(), pars.limit);
         </caption>
         <thead>
           <tr>
-            <td/>
+            <th/>
             <th title="Forme graphique indexée" class="form">Graphie</th>
             <th title="Catégorie grammaticale">Catégorie</th>
             <th title="Nombre d’occurrences trouvées" class="num"> Occurrences</th>
@@ -113,7 +113,7 @@ results.sort(pars.order.sorter(), pars.limit);
             <% if (pars.book != null || pars.q != null) out.println("<th title=\"Nombre total de textes contenant le mot\" class=\"all\">/textes</th>"); %>
             <th title="Score de pertinence selon l’algorithme" class="num"> Score</th>
             <th width="100%"/>
-            <td/>
+            <th/>
           </tr>
         </thead>
         <tbody>
