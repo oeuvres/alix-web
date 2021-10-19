@@ -7,7 +7,7 @@
   --texthi: #0f0;
   --textlo: #aaa;
   --textinv: #000;
-  --link: #80A080;
+  --link: #9fb79f;
   --bg2: #608060;
   --text2: #000;
   --text2hi: #fff;
@@ -636,10 +636,20 @@ td.form {
 }
 td.form a {
   display: block;
-  color: var(--text);
+  color: var(--link);
   border: none;
   padding: 1px 1rem;
 }
+td.form a.NAME {
+  color: #c80;
+}
+
+td.form a.SUB,
+td.form a.ADJ {
+  color: #fff;
+}
+
+
 td.form a:hover {
   text-decoration: none;
   color: var(--text3);

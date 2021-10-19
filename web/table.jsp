@@ -127,11 +127,18 @@ results.sort(pars.order.sorter(), pars.limit);
             results.next();
             no++;
             String term = results.form();
+            int flag = results.tag();
+            String css = "word";
+            if (flag == Tag.SUB.flag) css = "SUB";
+            else if (flag == Tag.ADJ.flag) css = "ADJ";
+            else if (flag == Tag.VERB.flag) css = "VERB";
+            else if (Tag.NAME.sameParent(flag)) css = "NAME";
             // .replace('_', ' ') ?
             out.println("  <tr>");
             out.println("    <td class=\"no left\">"  + no + "</td>");
             out.println("    <td class=\"form\">");
             out.print("      <a");
+            out.print(" class=\"" + css + "\"");
             out.print(" href=\"" + urlForm + JspTools.escUrl(term) + "\"");
             out.print(">");
             out.print(term);
@@ -139,7 +146,7 @@ results.sort(pars.order.sorter(), pars.limit);
             out.println("    </td>");
             
             out.print("    <td class=\"cat lo\">");
-            out.print(Tag.label(results.tag()));
+            out.print(Tag.label(flag));
             out.println("</td>");
             
             out.print("    <td class=\"num\">");

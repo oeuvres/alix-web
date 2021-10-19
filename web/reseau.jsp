@@ -299,12 +299,13 @@ for (Node node: nodeMap.values()) {
    else out.println(", ");
    int tag = ftext.tag(node.formId);
    String color = "rgba(255, 255, 255, 1)";
-   if (Tag.SUB.sameParent(tag)) color = "rgba(255, 255, 255, 0.7)";
+   if (Tag.SUB.sameParent(tag)) color = "rgba(255, 255, 255, 0.8)";
+   else if (Tag.ADJ.sameParent(tag)) color = "rgba(240, 255, 240, 0.7)";
    // if (node.type() == STAR) color = "rgba(255, 0, 0, 0.9)";
    else if (Tag.NAME.sameParent(tag)) color = "rgba(192, 128, 0, 1)";
    // else if (Tag.isVerb(tag)) color = "rgba(0, 0, 0, 1)";
    // else if (Tag.isAdj(tag)) color = "rgba(255, 128, 0, 1)";
-   else color = "rgba(0, 0, 0, 0.8)";
+   else color = "rgba(159, 183, 159, 1)";
    // {id:'n204', label:'coeur', x:-16, y:99, size:86, color:'hsla(0, 86%, 42%, 0.95)'},
    out.print("    {id:'n" + node.formId + "', label:'" + node.form.replace("'", "\\'") + "', size:" + (10 * node.count)); // node.count
    out.print(", x:" + ((int)(Math.random() * 100)) + ", y:" + ((int)(Math.random() * 100)) );
