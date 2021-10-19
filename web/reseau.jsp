@@ -132,6 +132,8 @@ if (planets < 1) planets = planetMid;
 
 pars.left = tools.getInt("left", 50);
 pars.right = tools.getInt("right", 50);
+pars.limit = tools.getInt("limit", 50);
+if (pars.limit > 200) pars.limit = 200;
 
 // for consistency, same freqlist as table.php
 // this list will be reused to get the matrix of distances
@@ -180,88 +182,7 @@ boolean first;
     nodeMap.put(formId, new Node(formId, freqList.form()).count(freqList.freq()).type(COMET));
     if (++i >= 500) break;
   }
-  /*
-  // Select nodes in the cooccurrence
-  if (pars.q != null && !pars.q.trim().isEmpty()) { // words requested, search for them
-    String[] forms = alix.forms(pars.q); // parse query as a set of terms
-    // rewrite queries, with only known terms
-    int nodeCount = 0;
-    for (String form: forms) {
-      int formId = ftext.formId(form);
-      if (formId < 0) continue;
-      final long freq = freqList.freq(formId);
-      // requested form not found
-      if (freq < 1) continue;
-      // keep query words as stars
-      nodeMap.put(formId, new Node(formId, form).count(freq).type(STAR));
-      if (++nodeCount >= pars.nodes) break;
-    }
-    final int starCount = nodeCount;
-    // reloop on nodes found in query, add coocs
-    first = true;
-    // try to add quite same node to on an another
-    int i = 1;
-    Node[] toloop = nodeMap.values().toArray(new Node[nodeMap.size()]);
-    pars.q = "";
-    freqList.limit = pars.nodes + starCount; // take more coccs we need
-    freqList.left = pars.left;
-    freqList.right = pars.right;
-    // Something is done here but not enough documented
-    for (Node src: toloop) {
-      if (first) first = false;
-      else pars.q += " ";
-      pars.q += src.form;
-      freqList.search = new String[]{src.form}; // parse query as terms
-      long found = frail.coocs(freqList);
-      if (found < 0) continue;
-      // score the coocs found, then loop on it
-      frail.score(freqList, -1); // why this limit ? ftext.occs(src.formId)
-      final int srcId = src.formId;
-      final long srcFreq = src.count; // local freq
 
-      final int countMax = (int)((double)pars.nodes * i / starCount);
-      i++;
-      freqList.reset();
-      while (freqList.hasNext()) {
-        freqList.next();
-        final int dstId = freqList.formId();
-        final Node dst = nodeMap.get(dstId);
-        if (dst != null) continue; // node already found
-        Node comet = new Node(dstId, freqList.form()).count(freqList.freq()).type(COMET);
-        nodeMap.put(dstId, comet);
-        if (++nodeCount >= countMax) break;
-      }
-    }
-  }
-  else { // 
-    int i = 0;
-    freqList.reset();
-    while (freqList.hasNext()) {
-      freqList.next();
-      final int formId = freqList.formId();
-      // add a linked node candidate
-      nodeMap.put(formId, new Node(formId, freqList.form()).count(freqList.freq()).type(COMET));
-      if (++i >= 500) break;
-    }
-    
-  }
-  */
-  /*
-           <label for="distrib" title="Algorithme d’ordre des mots pivots">Score</label>
-           <select name="distrib" onchange="this.form.submit()">
-            <option/>
-            pars.distrib.options("occs g bm25 tfidf")
-           </select>
-            
-            <label for="mi" title="Algorithme de score pour les liens">Dépendance</label>
-            <select name="mi" onchange="this.form.submit()">
-              <option/>
-              pars.mi.options()
-            </select>
-
-  
-  */
-  
   %>
 <!-- Nodes <%= ((System.nanoTime() - time) / 1000000.0) %> ms  -->
       <form id="form" class="search">
@@ -271,7 +192,7 @@ boolean first;
         <button type="submit">▶</button>
         
         <br/>
-        <input name="nodes" type="text" value="<%= pars.nodes %>" class="num3" size="2"/>
+        <input name="limit" type="text" value="<%= pars.limit %>" class="num3" size="2"/>
         <select name="f" onchange="this.form.submit()">
           <option/>
           <%=pars.field.options()%>
@@ -323,35 +244,6 @@ boolean first;
          -->
        </div>
     </div>
-    <%
-    /* debug
-    freqList.specif = null;
-    out.println(freqList.mi);
-    freqList.limit = nodeMap.size() * 2; // collect enough edges
-    for (Node src: nodeMap.values()) {
-      freqList.search = new String[]{src.form}; // set pivot of the coocs
-      long found = frail.coocs(freqList);
-      if (found < 0) continue;
-      // score the coocs found before loop on it
-      frail.score(freqList, ftext.occs(src.formId));
-      final int srcId = src.formId;
-      int count = 0;
-      while (freqList.hasNext()) {
-        freqList.next();
-        final int dstId = freqList.formId();
-        if (srcId == dstId) continue;
-        // link only selected nodes
-        final Node dst = nodeMap.get(dstId);
-        if (dst == null) continue;
-        out.println("<li>" + ftext.form(srcId) + " => " + ftext.form(dstId) + " (" + freqList.freq() + ") " + freqList.score() + " partOccs=" + freqList.partOccs + " dst frq=" 
-        + freqList.formOccs() +"</li>"); 
-        if (src.type() != STAR &&  count == planets) break;
-        count++;
-      }
-    }
-    out.flush();
-    // */ 
-    %>
     <script>
 <%first = true;
 out.println("var data = {");
@@ -409,7 +301,7 @@ for (Node node: nodeMap.values()) {
    String color = "rgba(255, 255, 255, 1)";
    if (Tag.SUB.sameParent(tag)) color = "rgba(255, 255, 255, 0.7)";
    // if (node.type() == STAR) color = "rgba(255, 0, 0, 0.9)";
-   else if (Tag.NAME.sameParent(tag)) color = "rgba(207, 19, 8, 1)";
+   else if (Tag.NAME.sameParent(tag)) color = "rgba(192, 128, 0, 1)";
    // else if (Tag.isVerb(tag)) color = "rgba(0, 0, 0, 1)";
    // else if (Tag.isAdj(tag)) color = "rgba(255, 128, 0, 1)";
    else color = "rgba(0, 0, 0, 0.8)";

@@ -8,11 +8,11 @@ static public enum Tab {
   index("<strong>Alix, démo</strong>", "index.jsp", "Présentation", new String[]{}) { },
   freqs("Table", "table.jsp", "Fréquences par mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
   cloud("Nuage", "nuage.jsp", "Nuage de mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
+  wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
   books("Livres", "livres.jsp", "Fréquences par livres/compilations", new String[]{"f", "q"}) { },
   chapters("Chapitres", "chapitres.jsp", "Fréquences par texte (chapitres, articles)", new String[]{"f", "q"}) { },
   kwic("Concordance", "conc.jsp", "Recherche de mot", new String[]{"q", "book"}) { },
   doc("Liseuse", "doc.jsp", "Lire un texte", new String[]{"id", "q"}) { },
-  wordnet("Réseau", "reseau.jsp", "Réseaux de mots", new String[]{"f", "cat", "order", "book", "q", "right", "left"}) { },
   ;
 
   final public String label;

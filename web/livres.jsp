@@ -3,7 +3,7 @@
 <%
 //global variables
 FieldFacet facet = alix.fieldFacet(Alix.BOOKID, pars.field.name());
-String[] search = alix.forms(pars.q);
+String[] search = alix.forms(pars.q, pars.field.name());
 FormEnum results = facet.results(search, null, pars.distrib.scorer());
 results.sort(FormEnum.Sorter.score, -1, false);
 

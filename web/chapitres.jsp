@@ -107,19 +107,18 @@ var div = document.getElementById("chart");
 g = new Dygraph(div, json.data, attrs);
 
       </script>
-      
+      <p> </p>
       <div>
         <table class="sortable" width="100%">
           <thead>
             <tr>
-              <td/>
+              <th> </th>
               <th>Score</th>
               <th>Année</th>
               <th style="width: 15ex;">Livre</th>
               <th class="q"><% if (pars.q != null) out.print("requête : <i>" + pars.q + "</i>"); %></th>
               <th>page</th>
-              <th/>
-              <th/>
+              <th> </th>
              </tr>
            </thead>
            <tbody>
@@ -151,7 +150,7 @@ DocStats docStats = null;
 double scoreMax = 1;
 double scoreMin = 0;
 if (pars.q != null) {
-  String[] forms = alix.forms(pars.q);
+  String[] forms = alix.forms(pars.q, pars.field.name());
   docStats = fstats.docStats(forms, Distrib.g.scorer(), null);
   if (docStats != null) {
     scoreMax = docStats.scoreMax();
@@ -210,8 +209,7 @@ for (ScoreDoc hit: hits) {
   String pages = doc.get("pages");
   if (pages != null) out.print(pages);
   out.println("</td>");
-  out.println("<td/>");
-  out.println("<td/>\n<td class=\"no right\">" + no + "</td>");
+  out.println("<td class=\"no right\">" + no + "</td>");
   out.println("</tr>");
   no++;
 }

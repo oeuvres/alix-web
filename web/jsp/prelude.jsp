@@ -208,8 +208,8 @@ public Pars pars(final PageContext page)
   if (pars.nodes > nodesMax) pars.nodes = nodesMax;
   
   // coocs
-  pars.left = tools.getInt("left", 5);
-  pars.right = tools.getInt("right", 5);
+  pars.left = tools.getInt("left", 0);
+  pars.right = tools.getInt("right", 0);
   if (pars.left < 0) pars.left = 0;
   if (pars.right < 0) pars.right = 0;
   if (pars.left + pars.right == 0) {

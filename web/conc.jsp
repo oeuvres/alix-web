@@ -98,7 +98,7 @@ public void kwic(final PageContext page, final Alix alix, final TopDocs topDocs,
 %>
 <%@ include file="jsp/prelude.jsp" %>
 <%
-pars.forms = alix.forms(pars.q);
+pars.forms = alix.forms(pars.q, pars.field.name());
 // local param
 pars.left = 50;
 pars.right = 70;

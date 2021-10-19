@@ -3,7 +3,6 @@
 <%
 FormEnum results = freqList(alix, pars);
 results.sort(pars.order.sorter(), pars.limit);
-out.println(results.fieldName);
 %>
 <!DOCTYPE html>
 <html>

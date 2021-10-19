@@ -7,6 +7,8 @@
 int max = 100;
 pars.limit = tools.getInt("limit", 50);
 if (pars.limit > max) pars.limit = max;
+// best words for query, no names
+pars.cat = (Cat)tools.getEnum("cat", Cat.STRONG);
 
 int docId = tools.getInt("docid", -1); // get doc by lucene internal docId or persistant String id
 String id = tools.getString("id", "");
@@ -151,7 +153,7 @@ if (doc != null) { // document id is verified, give it to javascript
       
       // hilite
       if (!"".equals(q)) {
-        String[] terms = alix.forms(q);
+        String[] terms = alix.forms(q, field);
         out.print(doc.hilite(field, terms));
       }
       else {
@@ -166,6 +168,8 @@ if (doc != null) { // document id is verified, give it to javascript
 if (mlt != null) {
   out.println("<h5>Sur les mêmes sujets…</h5>");
   IndexSearcher searcher = alix.searcher();
+  Similarity oldsim = searcher.getSimilarity();
+  searcher.setSimilarity(Sim.occs.similarity());
   // searcher.setSimilarity(sim.similarity()); // test has been done, BM25 is the best
   TopDocs topDocs;
   topDocs = searcher.search(mlt, 20);
@@ -181,6 +185,7 @@ if (mlt != null) {
     out.print("</a>");
     out.print("</div>");
   }
+  searcher.setSimilarity(oldsim);
 }
           %>
           
