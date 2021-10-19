@@ -199,7 +199,9 @@ public Pars pars(final PageContext page)
   pars.mime = (Mime)tools.getEnum("format", Mime.html);
   
 
-  pars.limit=100;
+  pars.limit = 100;
+  pars.limit = tools.getInt("limit", pars.limit);
+  // user should know his limits
   
   final int nodesMax = 300;
   final int nodesMid = 50;

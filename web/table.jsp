@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@ include file="jsp/prelude.jsp" %>
 <%
+pars.limit = tools.getInt("limit", 100);
+if (pars.limit < 0) pars.limit = 1;
+if (pars.limit > 1000) pars.limit = 1000;
 FormEnum results = freqList(alix, pars);
 results.sort(pars.order.sorter(), pars.limit);
 %>
@@ -23,7 +26,7 @@ results.sort(pars.order.sorter(), pars.limit);
         
         <br/>
 
-        <input name="limit" type="text" value="<%= pars.limit %>" class="num3" size="2"/>
+        <input name="limit" type="text" value="<%= pars.limit %>" class="num4" size="2"/>
         <select name="f" onchange="this.form.submit()">
           <option/>
           <%=pars.field.options()%>

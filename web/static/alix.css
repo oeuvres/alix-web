@@ -329,6 +329,10 @@ input.num3 {
   width: 4ex;
   text-align: right;
 }
+input.num4 {
+  width: 5.5ex;
+  text-align: right;
+}
 
 button[type="submit"].right {
   float: right;
