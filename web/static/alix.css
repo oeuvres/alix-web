@@ -59,7 +59,7 @@ body.facet .active,
 h4 .occs,
 a.xred,
 .term .occs {
-  color: var(--bg2);
+  /* color: var(--bg2); */
 }
 
 html {
