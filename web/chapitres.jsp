@@ -29,7 +29,7 @@ FieldText ftext = alix.fieldText(pars.field.name());
         <label>rangés par
            <select name="sort" onchange="this.form.submit()">
             <option/>
-            <%= pars.sort.options() %>
+            <%= pars.sort.options("score occs year year_inv") %>
             </select>
         </label>
         <button type="submit">▶</button>

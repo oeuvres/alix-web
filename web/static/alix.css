@@ -4,7 +4,7 @@
   --bg: #555550;
   --bghi: #40403c;
   --text: #eee;
-  --texthi: #0f0;
+  --texthi: #afa;
   --textlo: #aaa;
   --textinv: #000;
   --link: #9fb79f;
@@ -60,6 +60,22 @@ h4 .occs,
 a.xred,
 .term .occs {
   /* color: var(--bg2); */
+}
+
+
+
+.mark b {
+  background: var(--text);
+  color: var(--bg)
+}
+
+.mark a.prev, .mark a.next {
+  color: var(--bg3)
+}
+
+a:target,
+mark:target,
+b.mark:target {
 }
 
 html {
@@ -437,7 +453,7 @@ nav.seealso div.bibl {
 }
 
 .seealso .analytic {
-  color: #000;
+  color: var(--text);
   font-weight: 500;
 }
 .seealso .byline {
@@ -955,7 +971,7 @@ a.form {
   display: block;
   text-decoration: none;
   border-bottom: none;
-  color: white;
+  background-color: var(--textlo);
   width: 2rem;
   font-size: 1px;
   height: 6px;
@@ -966,6 +982,7 @@ a.form {
 #rulhi a:hover,
 #ruloccs a:hover {
   text-decoration: none;
+  background-color: var(--text);
 }
 
 #ruloccs a {

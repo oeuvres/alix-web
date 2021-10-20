@@ -155,7 +155,7 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
         />
         <select name="f" onchange="this.form.submit()">
           <option/>
-          <%=pars.field.options()%>
+          <%=pars.field.options("score occs year year_inv")%>
         </select>
         <!-- 
         <label>Expressions <input type="checkbox" name="expression" value="true" <%= (pars.expression)?"checked=\"checked\"":"" %>/></label>
