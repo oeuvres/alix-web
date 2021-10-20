@@ -28,6 +28,7 @@ if (q != null) {
    .build();
 }
 
+
 Marker marker = null;
 if (q != null) marker = new Marker(ANAMET, q);
 

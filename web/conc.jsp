@@ -40,7 +40,6 @@ public void kwic(final PageContext page, final Alix alix, final TopDocs topDocs,
     i++; // loop now
     final Doc doc = new Doc(alix, docId);
     String type = doc.doc().get(Alix.TYPE);
-    // TODO Enenum
     if (type.equals(DocType.book.name())) continue;
     // if (doc.doc().get(pars.field.name()) == null) continue; // not a good test, field may be indexed but not store
     String href = pars.href + "&amp;q=" + JspTools.escUrl(pars.q) + "&amp;id=" + doc.id() + "&amp;start=" + i + "&amp;sort=" + pars.sort.name();
@@ -93,8 +92,6 @@ public void kwic(final PageContext page, final Alix alix, final TopDocs topDocs,
   }
 
 }
-
-
 %>
 <%@ include file="jsp/prelude.jsp" %>
 <%
@@ -125,22 +122,8 @@ else if (qWords != null) query = qWords;
 else if (qFilter != null) query = qFilter;
 else query = QUERY_CHAPTER;
 
-TopDocs topDocs = null;
 IndexSearcher searcher = alix.searcher();
-int totalHitsThreshold = Integer.MAX_VALUE;
-final int numHits = alix.reader().maxDoc();
-TopDocsCollector<?> collector = null;
-
-if (pars.sort != null && pars.sort.sort() != null) {
-  collector = TopFieldCollector.create(pars.sort.sort(), numHits, totalHitsThreshold);
-}
-else {
-  collector = TopScoreDocCollector.create(numHits, totalHitsThreshold);
-}
-
-
-searcher.search(query, collector);
-topDocs = collector.topDocs();
+TopDocs topDocs = pars.sort.top(searcher, query);
 
 out.println("<!-- get topDocs "+(System.nanoTime() - nanos) / 1000000.0 + "ms\" -->");
 
@@ -199,7 +182,6 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
           out.println("<button title=\"Cliquer pour grouper les locutions\" type=\"submit\" name=\"expression\" value=\"true\">☐ Locutions</button>");
         }
         */
-  
         %>
         <select name="sort" onchange="this.form['start'].value=''; this.form.submit()" title="Ordre">
           <option/>
@@ -208,7 +190,10 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
        </form> 
     </header>
     <main>
-       <!-- query=<%= query %> totalHits=<%= topDocs.totalHits %> forms=<%= Arrays.toString(pars.forms) %> -->
+       <!-- 
+       query=<%= query %> 
+       totalHits=?? 
+       forms=<%= Arrays.toString(pars.forms) %> -->
        <% 
        pars.href = "doc.jsp?";
        kwic(pageContext, alix, topDocs, pars); 

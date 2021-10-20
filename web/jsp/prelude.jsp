@@ -41,9 +41,7 @@
 <%@ page import="alix.util.ML" %>
 <%@ page import="alix.util.TopArray" %>
 <%@ page import="alix.web.*" %>
-<%!
-
-/** Not yet used, to resolve relatice paths */
+<%!/** Not yet used, to resolve relatice paths */
 static String hrefHome = "";
 /** Load bases from WEB-INF/, one time */
 static {
@@ -149,7 +147,7 @@ public class Pars {
   String book; // restrict to a book
   String q; // word query
   Cat cat; // word categories to filter
-  Order order;// results, reverse
+  Order order;// order in list of terms and facets
   int limit; // results, limit of result to show
   int nodes; // number of nodes in wordnet
   int context; // coocs, context width in words
@@ -161,7 +159,6 @@ public class Pars {
   // too much scoring algo
   Distrib distrib; // ranking algorithm, tf-idf like
   MI mi; // proba kind of scoring, not tf-idf, [2, 2]
-  Sim sim; // ?? TODO, better logic
 
   
   int start; // start record in search results
@@ -183,12 +180,11 @@ public Pars pars(final PageContext page)
   // Words
   pars.cat = (Cat)tools.getEnum("cat", Cat.NOSTOP); // 
   
-  // ranking, sort… TODO unify
+  // ranking, sort… a bit a mess
   pars.distrib = (Distrib)tools.getEnum("distrib", Distrib.g);
   pars.mi = (MI)tools.getEnum("mi", MI.g);
-  // ???
-  pars.sim = (Sim)tools.getEnum("sim", Sim.g);
-  pars.sort = (DocSort)tools.getEnum("sort", DocSort.year);
+  // default sort in documents
+  pars.sort = (DocSort)tools.getEnum("sort", DocSort.score, "alixSort");
   //final FacetSort sort = (FacetSort)tools.getEnum("sort", FacetSort.freq, Cookies.freqsSort);
   pars.order = (Order)tools.getEnum("order", Order.score, "alixOrder");
   
@@ -244,6 +240,11 @@ public Pars pars(final PageContext page)
  */
 public String selectCorpus(final String corpusid)
 {
+  return selectCorpus(corpusid, null);
+}
+ 
+ public String selectCorpus(final String corpusid, String label)
+{
   StringBuilder sb = new StringBuilder();
   if (Alix.pool.size() == 1) {
     for (Map.Entry<String, Alix> entry : Alix.pool.entrySet()) {
@@ -251,7 +252,8 @@ public String selectCorpus(final String corpusid)
     }
   }
   else {
-    sb.append("<label for=\"corpus\" title=\"Choisir une base de textes\">Corpus</label>\n");
+    if (label == null) label="Corpus";
+    sb.append("<label for=\"corpus\" title=\"Choisir une base de textes\">" + label + "</label>\n");
     sb.append("<select name=\"corpus\" oninput=\"this.form.submit();\">\n");
     for (Map.Entry<String, Alix> entry : Alix.pool.entrySet()) {
       String value = entry.getKey();
@@ -328,7 +330,7 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
     // for stats, global freq of searched terms
     int pivotsOccs = 0;
     for (String form: results.search) {
-      pivotsOccs += fieldText.occs(form);
+      pivotsOccs += fieldText.formOccs(form);
     }
     long found = rail.coocs(results); // populate the wordlist
     if (found > 0) {
@@ -354,9 +356,7 @@ public FormEnum freqList(Alix alix, Pars pars) throws IOException
   }
   // is it good to sort freqList here ?
   return results;
-}
-
-%>
+}%>
 <%
 long time = System.nanoTime();
 // Common to all pages, get an alix base and other shared data

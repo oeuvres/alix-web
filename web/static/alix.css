@@ -1284,3 +1284,7 @@ input.nb {
 #totop:hover {
   opacity: 1;
 }
+
+p.speaker {
+  color: var(--textlo);
+}

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="alix.lucene.search.Doc" %>
+<%@ page import="org.apache.lucene.search.similarities.*" %>
 <%@ page import="alix.util.Top" %>
 <%@include file="jsp/prelude.jsp" %>
 <%
@@ -42,9 +43,9 @@ SortField sf2 = new SortField(Alix.ID, SortField.Type.STRING);
 <!DOCTYPE html>
 <html class="document">
   <head>
+    <link href="<%= hrefHome %>vendor/teinte.css" rel="stylesheet"/>
     <%@ include file="local/head.jsp" %>
     <title>Livres</title>
-    <link href="<%= hrefHome %>vendor/teinte.css" rel="stylesheet"/>
     <script>
 <%
 if (doc != null) { // document id is verified, give it to javascript
@@ -168,11 +169,13 @@ if (doc != null) { // document id is verified, give it to javascript
 if (mlt != null) {
   out.println("<h5>Sur les mêmes sujets…</h5>");
   IndexSearcher searcher = alix.searcher();
-  Similarity oldsim = searcher.getSimilarity();
-  searcher.setSimilarity(Sim.occs.similarity());
-  // searcher.setSimilarity(sim.similarity()); // test has been done, BM25 is the best
+  //test has been done, BM25 seems the best
+  // Similarity oldSim = searcher.getSimilarity();
+  // searcher.setSimilarity(new LMDirichletSimilarity());
+  // searcher.setSimilarity(sim.similarity()); 
   TopDocs topDocs;
   topDocs = searcher.search(mlt, 20);
+  // searcher.setSimilarity(oldSim);
   ScoreDoc[] hits = topDocs.scoreDocs;
   final String href = "?id=";
   final HashSet<String> DOC_SHORT = new HashSet<String>(Arrays.asList(new String[] {Alix.ID, Alix.BOOKID, "bibl"}));
@@ -185,7 +188,6 @@ if (mlt != null) {
     out.print("</a>");
     out.print("</div>");
   }
-  searcher.setSimilarity(oldsim);
 }
           %>
           

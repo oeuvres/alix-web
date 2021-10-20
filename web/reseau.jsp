@@ -115,6 +115,7 @@ static class Node implements Comparable<Node>
 
 %>
 <%
+boolean first;
 // global data handlers
 String field = pars.field.name();
 /*
@@ -144,8 +145,6 @@ freqList.sort(pars.order.sorter(), pars.limit);
 final FieldText ftext = alix.fieldText(field);
 final FieldRail frail = alix.fieldRail(field);
 
-
-boolean first;
 
 %>
 <!DOCTYPE html>
@@ -245,7 +244,8 @@ boolean first;
        </div>
     </div>
     <script>
-<%first = true;
+<%
+first = true;
 out.println("var data = {");
 out.println("  edges: [");
 
@@ -266,7 +266,7 @@ for (Node src: nodeMap.values()) {
   if (found < 1) continue;
   // score the coocs found before loop on it
   final int srcId = src.formId;
-  frail.score(freqList, ftext.occs(srcId));
+  frail.score(freqList, ftext.formOccs(srcId));
   int count = 0;
   while (freqList.hasNext()) {
     freqList.next();
@@ -281,7 +281,7 @@ for (Node src: nodeMap.values()) {
     else out.println(", ");
     out.print("    {id:'e" + (edgeId++) + "', source:'n" + srcId + "', target:'n" + dstId + "', size:" + freqList.score() 
     + ", color:'rgba(128, 128, 128, 0.2)'"
-    + ", srcLabel:'" + ftext.form(srcId).replace("'", "\\'") + "', srcOccs:" + ftext.occs(srcId) + ", dstLabel:'" + ftext.form(dstId).replace("'", "\\'") + "', dstOccs:" + ftext.occs(dstId) + ", freq:" + freqList.freq()
+    + ", srcLabel:'" + ftext.form(srcId).replace("'", "\\'") + "', srcOccs:" + ftext.formOccs(srcId) + ", dstLabel:'" + ftext.form(dstId).replace("'", "\\'") + "', dstOccs:" + ftext.formOccs(dstId) + ", freq:" + freqList.freq()
     + "}");
     if (src.type() != STAR &&  count == planets) break;
     count++;
@@ -318,7 +318,8 @@ for (Node node: nodeMap.values()) {
   
 
 
- out.println("}");%>
+ out.println("}");
+ %>
 
 
 

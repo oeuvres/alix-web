@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app 
+<web-app
     id="ddrlab"
     version="3.0"
     xmlns="http://java.sun.com/xml/ns/javaee"
@@ -15,4 +15,8 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <init-param>
+    <param-name>development</param-name>
+    <param-value>true</param-value>
+  </init-param>
 </web-app>
