@@ -981,6 +981,7 @@ a.form {
 
 #rulhi a:hover,
 #ruloccs a:hover {
+  z-index: 10;
   text-decoration: none;
   background-color: var(--text);
 }
