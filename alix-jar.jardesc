@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="alixapp/web/WEB-INF/lib/alix.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/alixapp/alix-jar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/alix/lib/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/alix/.factorypath"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.util"/>
+        <javaElement handleIdentifier="=alix/java&lt;org.apache.lucene.analysis"/>
+        <file path="/alix/javadoc.xml"/>
+        <file path="/alix/LICENSE"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.cli"/>
+        <file path="/alix/.gitignore"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.lucene.search"/>
+        <file path="/alix/README.md"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.lucene.util"/>
+        <file path="/alix/.project"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.maths"/>
+        <file path="/alix/.classpath"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.lucene"/>
+        <javaElement handleIdentifier="=alix/java&lt;picocli"/>
+        <file path="/alix/java/overview.html"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.lucene.analysis"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.web"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.xml"/>
+        <file path="/alix/NOTICE"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.fr"/>
+        <javaElement handleIdentifier="=alix/java&lt;alix.lucene.analysis.tokenattributes"/>
+    </selectedElements>
+</jardesc>
