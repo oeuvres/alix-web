@@ -371,6 +371,6 @@ if (Alix.pool.size() > 0) {
 Alix alix = (Alix)tools.getMap("corpus", Alix.pool, corpusDefault, "alixCorpus");
 
 IndexReader reader = null;
-if (alix != null) alix.reader();
+if (alix != null) reader = alix.reader();
 
 %>
