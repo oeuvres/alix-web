@@ -136,7 +136,7 @@ pars.right = tools.getInt("right", 50);
 pars.limit = tools.getInt("limit", 50);
 if (pars.limit > 200) pars.limit = 200;
 
-// for consistency, same freqlist as table.php
+// for consistency, same freqlist as table.jsp
 // this list will be reused to get the matrix of distances
 FormEnum freqList = freqList(alix, pars);
 // don’t forget to sort, with a limit
@@ -302,7 +302,7 @@ for (Node node: nodeMap.values()) {
    if (Tag.SUB.sameParent(tag)) color = "rgba(255, 255, 255, 0.8)";
    else if (Tag.ADJ.sameParent(tag)) color = "rgba(240, 255, 240, 0.7)";
    // if (node.type() == STAR) color = "rgba(255, 0, 0, 0.9)";
-   else if (Tag.NAME.sameParent(tag)) color = "rgba(192, 128, 0, 1)";
+   else if (Tag.NAME.sameParent(tag)) color = "rgba(255, 192, 0, 1)";
    // else if (Tag.isVerb(tag)) color = "rgba(0, 0, 0, 1)";
    // else if (Tag.isAdj(tag)) color = "rgba(255, 128, 0, 1)";
    else color = "rgba(159, 183, 159, 1)";
