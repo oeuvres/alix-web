@@ -71,7 +71,7 @@ if (doc != null) { // document id is verified, give it to javascript
           </svg>
         </button>
        -->
-        <%= selectCorpus(alix.name) %>
+        <%= selectCorpus(alix.name) %>,
         <label for="titles">Chercher un titre</label>
         <input id="titles" name="titles" aria-describedby="titles-hint" placeholder="am… dia… eu… fed…" size="50"/>
         <div class="progress"><div></div></div>

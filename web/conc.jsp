@@ -141,8 +141,7 @@ span.left {display: inline-block; text-align: right; width: <%= Math.round(10+pa
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
       <form  class="search">
-        <%= selectCorpus(alix.name) %>
-        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
+        <%= selectCorpus(alix.name) %>,
         <%= selectBook(alix, pars.book) %>
         
         <br/>

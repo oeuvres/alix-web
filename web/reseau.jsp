@@ -178,15 +178,17 @@ final FieldRail frail = alix.fieldRail(field);
     freqList.next();
     final int formId = freqList.formId();
     // add a linked node candidate
-    nodeMap.put(formId, new Node(formId, freqList.form()).count(freqList.freq()).type(COMET));
+    long count = 1;
+    if (pars.order.equals(Order.hits)) count = freqList.hits();
+    else count = freqList.freq();
+    nodeMap.put(formId, new Node(formId, freqList.form()).count(count).type(COMET));
     if (++i >= 500) break;
   }
 
   %>
 <!-- Nodes <%= ((System.nanoTime() - time) / 1000000.0) %> ms  -->
       <form id="form" class="search">
-        <%= selectCorpus(alix.name) %>
-        <label for="book" title="Limiter la sélection à un seul livre">Livre</label>
+        <%= selectCorpus(alix.name) %>,
         <%= selectBook(alix, pars.book) %>
         <button type="submit">▶</button>
         
@@ -307,7 +309,7 @@ for (Node node: nodeMap.values()) {
    // else if (Tag.isAdj(tag)) color = "rgba(255, 128, 0, 1)";
    else color = "rgba(159, 183, 159, 1)";
    // {id:'n204', label:'coeur', x:-16, y:99, size:86, color:'hsla(0, 86%, 42%, 0.95)'},
-   out.print("    {id:'n" + node.formId + "', label:'" + node.form.replace("'", "\\'") + "', size:" + (10 * node.count)); // node.count
+   out.print("    {id:'n" + node.formId + "', label:'" + node.form.replace("'", "\\'") + "', size:" + (node.count)); // node.count
    out.print(", x:" + ((int)(Math.random() * 100)) + ", y:" + ((int)(Math.random() * 100)) );
    if (node.type() == STAR) out.print(", type:'hub'");
    out.print(", color:'" + color + "'");

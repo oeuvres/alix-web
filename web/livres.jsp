@@ -18,7 +18,7 @@ results.sort(FormEnum.Sorter.score, -1, false);
     <header>
       <jsp:include page="local/tabs.jsp" flush="true" />
       <form  class="search">
-        <%= selectCorpus(alix.name) %>
+        <%= selectCorpus(alix.name) %>,
         <label for="q" title="Classer les livres selon un ou plusieurs mots">Chercher</label>
         <input name="q" class="q" onclick="this.select()" type="text" value="<%=tools.escape(pars.q)%>" size="40" />
         <select name="f" onchange="this.form.submit()">
@@ -58,9 +58,9 @@ results.sort(FormEnum.Sorter.score, -1, false);
           <tr>
             <td/>
             <th>Livre</th>
-            <th title="Nombre d’occurrences trouvées" class="num"> Occurrences</th>
-            <th title="Taille du livre-compilation en mots" class="all">/occurrences</td>
-            <th title="Nombre de chapitres-articles contenant les mots cherchés" class="num"> Textes</th>
+            <th title="Nombre d’occurrences trouvées" class="num"> occurrences</th>
+            <th title="Taille du livre en mots" class="all">/mots</td>
+            <th title="Nombre de chapitres-articles contenant les mots cherchés" class="num"> résultats</th>
             <th title="Taille du livre-compilation en chapitres-articles" class="all">/textes</th>
             <th title="Score selon l’algorithme" class="num"> Score</th>
             <th width="100%"/>

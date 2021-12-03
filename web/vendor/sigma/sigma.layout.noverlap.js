@@ -253,9 +253,9 @@
       for (var i = 0; i < nodes.length; i++) {
         nodes[i].dn_x = nodes[i][prefix + 'x'];
         nodes[i].dn_y = nodes[i][prefix + 'y'];
-        nodes[i].dn_height = nodes[i][prefix + 'size'] * (labelSizeRatio / 1.5);
+        nodes[i].dn_height = nodes[i][prefix + 'size'] * (labelSizeRatio * 0.7);
         nodes[i].dn_width = nodes[i][prefix + 'size'];
-        if (nodes[i].label) nodes[i].dn_width = nodes[i].dn_width * nodes[i].label.length * 0.2 * labelSizeRatio;
+        if (nodes[i].label) nodes[i].dn_width = nodes[i].dn_width * nodes[i].label.length * 0.25 * labelSizeRatio;
         nodes[i].dn = {
           dx: 0,
           dy: 0

@@ -19,7 +19,7 @@ results.sort(pars.order.sorter(), pars.limit);
       <form class="search" action="#">
         <a  class="icon" href="csv.jsp?<%= tools.url(new String[]{"q", "cat", "book", "left", "right", "distrib", "mi"}) %>"><img src="static/icon_csv.svg" alt="Export intégral des données au format "></a>
         <a class="icon" href="tableur.jsp?<%= tools.url(new String[]{"q", "cat", "book", "left", "right", "distrib", "mi", "limit"}) %>"><img src="static/icon_excel.svg" alt="Export des données visibles pour Excel"></a>
-        <%= selectCorpus(alix.name) %>
+        <%= selectCorpus(alix.name) %>,
         <%= selectBook(alix, pars.book) %>
         <button type="submit">▶</button>
         
@@ -110,8 +110,8 @@ results.sort(pars.order.sorter(), pars.limit);
             <th title="Forme graphique indexée" class="form">Graphie</th>
             <th title="Catégorie grammaticale">Catégorie</th>
             <th title="Nombre d’occurrences trouvées" class="num"> Occurrences</th>
-            <% if (pars.book != null || pars.q != null) out.println("<th title=\"Sur total des occurences de cette graphie\" class=\"all\">/occurrences</td>"); %>
-            <th title="Nombre de chapitres-articles contenant la grahie" class="num"> Textes</th>
+            <% if (pars.book != null || pars.q != null) out.println("<th title=\"Sur total des occurences de cette graphie\" class=\"all\">/mots</td>"); %>
+            <th title="Nombre de chapitres-articles contenant la grahie" class="num"> Résultats</th>
             <% if (pars.book != null || pars.q != null) out.println("<th title=\"Nombre total de textes contenant le mot\" class=\"all\">/textes</th>"); %>
             <th title="Score de pertinence selon l’algorithme" class="num"> Score</th>
             <th width="100%"/>
