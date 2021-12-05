@@ -65,7 +65,7 @@ results.sort(pars.order.sorter(), pars.limit);
         </select>
         <br/>
         <label for="q" title="Mots fréquents autour d’un ou plusieurs mots">Co-occurrents de</label>
-        <input name="q" class="q" onclick="this.select()" type="text" value="<%=tools.escape(pars.q)%>" size="40" />
+        <input name="q" class="q" onclick="this.select()" type="text" value="<%=JspTools.escape(pars.q)%>" size="40" />
         <input name="left" value="<%=pars.left%>" size="1" class="num3"/>
         <label for="left" title="Nombre de mots à capturer à gauche">à gauche</label>
         <input name="right" value="<%=pars.right%>" size="1" class="num3"/>
