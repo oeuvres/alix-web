@@ -64,7 +64,8 @@ results.sort(pars.order.sorter(), pars.limit);
         </div>
         <script>
                                     var words = [
-<%// {"word" : "beau", "weight" : 176, "attributes" : {"class" : "ADJ"}},
+<%p
+// {"word" : "beau", "weight" : 176, "attributes" : {"class" : "ADJ"}},
 boolean first = true;
 results.reset();
 while (results.hasNext()) {
@@ -74,14 +75,13 @@ while (results.hasNext()) {
     else
         out.print(",\n");
     double score = results.score();
-    if (pars.distrib.equals(OptionDistrib.g))
+    if (pars.distrib.equals(OptionDistrib.G))
         score = Math.sqrt(score);
     // else if (distrib.equals(Distrib.tfidf)) score = Math.sqrt(score) ;
-    else if (pars.distrib.equals(OptionDistrib.bm25) || pars.distrib.equals(OptionDistrib.tfidf))
+    else if (pars.distrib.equals(OptionDistrib.BM25) || pars.distrib.equals(OptionDistrib.TFIDF))
         score = score * score;
     out.print("  {'word': '" + results.form().replace("'", "\\'") + "', 'weight': " + score
-            + ", 'attributes': {'class': '" + Tag.parent(results.tag()).toString() + "'}}");
-}%>
+            + ", 'attributes': {'class': '" + Tag.parent(results.tag()).toString() + "'}}");%>
                                     ];
                                 </script>
     </main>

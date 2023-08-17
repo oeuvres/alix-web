@@ -46,12 +46,10 @@ SortField sf2 = new SortField(Alix.ID, SortField.Type.STRING);
 <title>Livres</title>
 <script>
     
-<%
-if (doc != null) { // document id is verified, give it to javascript
+<%if (doc != null) { // document id is verified, give it to javascript
     out.println("var docLength = " + doc.length(field) + ";");
     out.println("var docId = \"" + doc.id() + "\";");
-}
-%>
+}%>
 </script>
 </head>
 <body class="document">
@@ -95,21 +93,21 @@ if (doc != null) { // document id is verified, give it to javascript
 
             <%
             /*
-            if (topDocs != null && start > 1) {
-              out.println("<button name=\"prev\" type=\"submit\" onclick=\"this.form['start'].value="+(start - 1)+"\">◀</button>");
-            }
-            */
+                if (topDocs != null && start > 1) {
+                  out.println("<button name=\"prev\" type=\"submit\" onclick=\"this.form['start'].value="+(start - 1)+"\">◀</button>");
+                }
+                */
             %>
             <%
             /*
-            if (topDocs != null) {
-            long max = topDocs.totalHits.value;
-            out.println("<span class=\"hits\"> / "+ max  + "</span>");
-            if (start < max) {
-            out.println("<button name=\"next\" type=\"submit\" onclick=\"this.form['start'].value="+(start + 1)+"\">▶</button>");
-            }
-            }
-            */
+                if (topDocs != null) {
+                long max = topDocs.totalHits.value;
+                out.println("<span class=\"hits\"> / "+ max  + "</span>");
+                if (start < max) {
+                out.println("<button name=\"next\" type=\"submit\" onclick=\"this.form['start'].value="+(start + 1)+"\">▶</button>");
+                }
+                }
+                */
             %>
         </form>
     </header>
@@ -121,7 +119,7 @@ Query mlt = null;
 if (doc != null) {
     out.println(" <h5>Mots clés</h5>");
     BooleanQuery.Builder qBuilder = new BooleanQuery.Builder();
-    FormEnum forms = doc.results(field, pars.distrib.scorer(), pars.cat.tags());
+    FormEnum forms = doc.forms(field, pars.distrib.scorer(), pars.cat.tags());
     forms.sort(FormEnum.Sorter.score, pars.limit, false);
     int no = 1;
     forms.reset();

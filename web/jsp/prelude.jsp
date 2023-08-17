@@ -184,12 +184,12 @@
         pars.cat = (OptionCat) tools.getEnum("cat", OptionCat.NOSTOP); // 
 
         // ranking, sort… a bit a mess
-        pars.distrib = (OptionDistrib) tools.getEnum("distrib", OptionDistrib.g);
-        pars.mi = (OptionMI) tools.getEnum("mi", OptionMI.g);
+        pars.distrib = (OptionDistrib) tools.getEnum("distrib", OptionDistrib.G);
+        pars.mi = (OptionMI) tools.getEnum("mi", OptionMI.G);
         // default sort in documents
         pars.sort = (OptionSort) tools.getEnum("sort", OptionSort.score, "alixSort");
         //final FacetSort sort = (FacetSort)tools.getEnum("sort", FacetSort.freq, Cookies.freqsSort);
-        pars.order = (OptionOrder) tools.getEnum("order", OptionOrder.score, "alixOrder");
+        pars.order = (OptionOrder) tools.getEnum("order", OptionOrder.SCORE, "alixOrder");
 
         String format = tools.getString("format", null);
         //if (format == null) format = (String)request.getAttribute(Dispatch.EXT);
@@ -341,7 +341,7 @@
             if (found > 0) {
                 // parameters for sorting
                 results.limit = pars.limit;
-                results.mi = OptionMI.g; // hard coded mutual-info algo, seems the best
+                results.mi = OptionMI.G; // hard coded mutual-info algo, seems the best
                 results.reverse = reverse;
                 rail.score(results, pivotsOccs);
                 // throw new IllegalArgumentException("rail.fieldName="+rail.fieldName);
@@ -352,7 +352,7 @@
             // final int limit, Specif specif, final BitSet filter, final TagFilter tags, final boolean reverse
             // dic = fieldText.iterator(pars.limit, pars.ranking.specif(), filter, pars.cat.tags(), reverse);
             // pars.distrib.scorer()
-            results = fieldText.results(pars.cat.tags(), OptionDistrib.bm25.scorer(), filter); // hard coded distribution, seems the best
+            results = fieldText.forms(pars.cat.tags(), OptionDistrib.BM25.scorer(), filter); // hard coded distribution, seems the best
             results.filter = filter; // keep en handle for later use
             results.tags = pars.cat.tags(); // keep en handle for later use
 
